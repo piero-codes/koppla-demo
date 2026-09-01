@@ -10,6 +10,9 @@ test("get_site finds Hamburg-Altona case-insensitively and by substring", () => 
   assert.equal(exact.site_manager, "Petra Lindqvist");
   assert.equal(TOOLS.get_site({ name: "hamburg-altona" }).address, exact.address);
   assert.equal(TOOLS.get_site({ name: "Hamburg-Altona construction site" }).address, exact.address);
+  assert.equal(TOOLS.get_site({ name: "Hamburg Altona" }).address, exact.address);
+  assert.equal(TOOLS.get_site({ name: "hamburg altona site" }).address, exact.address);
+  assert.equal(TOOLS.get_site({ name: "Hamburg–Altona" }).address, exact.address);
 });
 
 test("get_site returns an error object for unknown or empty names", () => {

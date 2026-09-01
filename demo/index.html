@@ -51,6 +51,7 @@
   .observe { background: var(--obs-bg); border: 1px solid var(--obs-line); } .observe .tag { color: var(--obs); }
   .done { background: var(--done-bg); border: 1px solid var(--done-line); } .done .tag { color: #8fb3ff; }
   .error { background: var(--err-bg); border: 1px solid var(--err-line); color: var(--err); grid-column: 1 / -1; }
+  .error-text { color: var(--err); font-weight: 600; }
   .cell.empty { min-height: 0; }
 
   .gutter { display: flex; align-items: center; justify-content: center; min-height: 3rem; font-size: 1.6rem; }
@@ -130,7 +131,7 @@
 
         <!-- Done row -->
         <div class="cell" v-if="row.done">
-          <div class="card done"><span class="tag">Done</span><typewriter :text="row.done.text"></typewriter></div>
+          <div class="card done"><span class="tag">Done</span><typewriter :text="row.done.text || '(no summary given)'"></typewriter></div>
         </div>
         <div class="cell empty" v-if="row.done"></div>
         <div class="cell empty" v-if="row.done"></div>
@@ -144,6 +145,7 @@
 <script src="agent.js"></script>
 <script>
   const REPLAY_DELAY_MS = 1500;
+  const LIVE_STAGGER_MS = 800;
   const MAX_TYPE_MS = 3000;        // a whole card finishes typing within this
   const CHAR_MS = 33;              // ~30 chars/s ceiling
 
@@ -217,6 +219,14 @@
         return rows;
       },
     },
+    watch: {
+      "events.length"() {
+        this.$nextTick(() => {
+          const last = document.querySelector("main > :last-child");
+          if (last) last.scrollIntoView({ block: "end", behavior: "smooth" });
+        });
+      },
+    },
     methods: {
       fmtArgs(args) {
         return Object.entries(args || {})
@@ -228,17 +238,38 @@
         this.events = [];
         this.status = "running";
         const t0 = Date.now();
-        await runAgent(this.goal, e => { if (runId === this.runId) this.events.push({ ...e, t: Date.now() - t0 }); },
-          { apiKey: this.apiKey, tools: TOOLS, toolDefs: TOOL_DEFS });
+        const queue = [];
+        let draining = null;
+        const drain = () => {
+          if (draining) return draining;
+          draining = (async () => {
+            await Promise.resolve();   // yield first: guarantees this IIFE never resolves
+                                        // synchronously, so the `draining =` assignment below
+                                        // always lands before any inner `draining = null`
+            while (queue.length) {
+              if (runId !== this.runId) { queue.length = 0; break; }
+              this.events.push(queue.shift());
+              if (queue.length) await new Promise(r => setTimeout(r, LIVE_STAGGER_MS));
+            }
+            draining = null;
+          })();
+          return draining;
+        };
+        const emit = e => { queue.push({ ...e, t: Date.now() - t0 }); drain(); };
+        await runAgent(this.goal, emit, { apiKey: this.apiKey, tools: TOOLS, toolDefs: TOOL_DEFS });
+        while (draining) await draining;
         if (runId === this.runId) this.status = this.events.some(e => e.type === "error") ? "error" : "done";
       },
       saveRun() {
         const blob = new Blob([JSON.stringify(this.events, null, 2)], { type: "application/json" });
         const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+        a.href = url;
         a.download = `run-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+        document.body.appendChild(a);
         a.click();
-        URL.revokeObjectURL(a.href);
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
       },
       async loadRun(ev) {
         const file = ev.target.files[0];

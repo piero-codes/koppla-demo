@@ -68,7 +68,11 @@ async function callModel(input, opts) {
     const err = await res.json().catch(() => ({}));
     throw new Error((err.error && err.error.message) || `HTTP ${res.status}`);
   }
-  return res.json();
+  const data = await res.json();
+  if (!Array.isArray(data.output)) {
+    throw new Error((data.error && data.error.message) || `Unexpected response (status ${data.status})`);
+  }
+  return data;
 }
 
 /**

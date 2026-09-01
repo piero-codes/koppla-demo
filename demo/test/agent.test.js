@@ -132,6 +132,22 @@ test("HTTP error without JSON body falls back to the status code", async () => {
   assert.equal(events[1].message, "HTTP 502");
 });
 
+test("200 response missing output array (incomplete status) becomes an error event", async () => {
+  const fetchFn = fakeFetch([{ body: { status: "incomplete", incomplete_details: { reason: "max_output_tokens" } } }]);
+  const { events, emit } = collect();
+  await runAgent(GOAL, emit, baseOpts(fetchFn));
+  assert.deepEqual(events.map(e => e.type), ["goal", "error"]);
+  assert.equal(events[1].message, "Unexpected response (status incomplete)");
+});
+
+test("200 response missing output array with a top-level error uses its message", async () => {
+  const fetchFn = fakeFetch([{ body: { error: { message: "boom" } } }]);
+  const { events, emit } = collect();
+  await runAgent(GOAL, emit, baseOpts(fetchFn));
+  assert.deepEqual(events.map(e => e.type), ["goal", "error"]);
+  assert.equal(events[1].message, "boom");
+});
+
 test("network failure becomes a friendly error event", async () => {
   const fetchFn = fakeFetch([new TypeError("Failed to fetch")]);
   const { events, emit } = collect();

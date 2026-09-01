@@ -33,14 +33,17 @@ const HOTELS = [
   { name: "Motel Nord",         distance_km: 3.5, price_eur: 79 },
 ];
 
+const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9äöüß]/g, "");
+
 /** @type {Record<string, (args: any) => object>} */
 const TOOLS = {
   get_site({ name } = {}) {
     const q = String(name || "").trim().toLowerCase();
     if (!q) return { error: "No site named " + (name ?? "") };
+    const nq = norm(q);
     const site = SITES.find(s => {
-      const n = s.name.toLowerCase();
-      return n.includes(q) || q.includes(n);
+      const n = norm(s.name);
+      return n.includes(nq) || nq.includes(n);
     });
     return site ? { ...site } : { error: `No site named ${name}` };
   },

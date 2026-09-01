@@ -29,6 +29,8 @@ Buttons: **Start** runs the agent · **Save run** downloads the run as JSON ·
 
 1. Fresh clone, open `demo/index.html`, **Load run** → `demo/runs/good-run.json`.
    This must work with no network. It is your fallback on the day.
+   (Record it first with the command under *Recording a fresh good run* if it
+   is not in the repo yet.)
 2. Enter the key, **Start**. If it runs: done.
 3. If Start fails with "Could not reach api.openai.com" (a proxy or browser
    policy blocking calls from a page opened from disk), serve the folder
@@ -57,7 +59,7 @@ picked). Run it a few times; all checks should pass every time.
 ```
 npm test
 ```
-Node 18+ (uses the built-in test runner). Tests cover the mock world, the loop
+Node 22 (tested; `node --test` with a glob needs Node 21+). Tests cover the mock world, the loop
 (with a fake `fetch`), and the saved-run validator. No key needed.
 
 ## Model settings

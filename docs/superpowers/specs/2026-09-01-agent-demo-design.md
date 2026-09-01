@@ -30,7 +30,7 @@ laptop for the talk. Everything must run there without setup.
 | Tool parameters | No filter params (`arrive_by`, `max_price` dropped). Tools return all options. | If code filtered, the judgement calls would not be the model's. |
 | Parallel tool calls | `parallel_tool_calls: false` | Clean Think → Act → Observe per cycle; matches the slide. |
 | Permission gate | None. `send_itinerary` runs like any tool. | Keep the demo purely about the loop. Slides 7/8 adjusted (§9). |
-| Pacing | No Next button, no buffering. Cards appear as events happen; "thinking…" indicator while waiting. | Simpler; the latency *is* the model thinking. |
+| Pacing | No Next button, no manual pacing. Cards appear as events happen; "thinking…" indicator while waiting. Within a cycle the tools run synchronously, so the UI reveals consecutive cards with a short automatic stagger (~0.8 s) — otherwise Think, Act and Observe would paint in one frame and the loop would be invisible live. | Simpler; the latency *is* the model thinking; the stagger keeps Think → Act → Observe visible. |
 | History | Loop keeps the `input` list itself and appends output items + tool results each cycle (no `previous_response_id`). | Shows the context growing; provider-agnostic; slide-able. |
 | Code structure | Three separate blocks in one file: `tools`, `runAgent(goal, emit)`, Vue app. | Loop is pure, testable from the console, and readable on a slide. |
 | Portability | Vue vendored (no CDN). A known-good run committed for offline replay. | Work laptop may block CDNs or the API. |
@@ -238,6 +238,8 @@ Layout, top to bottom:
     right → left.
   - `done` → highlighted Done card, left, full text.
   - `error` → red card spanning both columns.
+- Live runs reveal queued events with a short stagger (`LIVE_STAGGER_MS`,
+  ~0.8 s) between consecutive cards; the page auto-scrolls to the newest card.
 - Typography: base 20 px, dark high-contrast theme, readable on a projector.
   No settings, no chat input.
 
