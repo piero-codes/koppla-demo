@@ -83,7 +83,7 @@
         <button :disabled="events.length === 0 || busy" @click="saveRun">Save run</button>
         <button :disabled="busy" @click="$refs.file.click()">Load run</button>
         <input ref="file" type="file" accept=".json,application/json" hidden @change="loadRun">
-        <button :disabled="status === 'running'" @click="reset">Reset</button>
+        <button @click="reset">Reset</button>
       </div>
       <div class="hint" v-if="!apiKey">Enter an API key to Start, or Load a saved run.</div>
     </div>
@@ -246,7 +246,10 @@
         if (!file) return;
         let data;
         try { data = validateRun(JSON.parse(await file.text())); }
-        catch (e) { this.events = [{ type: "error", message: e.message, t: 0 }]; this.status = "error"; return; }
+        catch (e) {
+          const message = e.message.startsWith("Not a saved run") ? e.message : "Not a saved run: " + e.message;
+          this.events = [{ type: "error", message, t: 0 }]; this.status = "error"; return;
+        }
         const runId = ++this.runId;
         this.events = [];
         this.status = "replaying";
