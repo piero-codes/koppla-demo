@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is an agent? — Koppla demo</title>
+<style>
+  :root {
+    --bg: #0f1117; --panel: #161923; --line: #2a2d3a; --text: #e8e8ec; --muted: #9aa0ad;
+    --think: #c9a3ff; --think-bg: #1e1a2e; --think-line: #4a3b7a;
+    --act: #ffd27a; --act-bg: #1a1d27; --act-line: #3a3d4a;
+    --obs: #7fd6a8; --obs-bg: #12211a; --obs-line: #2f6b4a;
+    --done-bg: #1b2a3a; --done-line: #2f6fed;
+    --err: #ff8a8a; --err-bg: #2e1616; --err-line: #7a3b3b;
+    --accent: #2f6fed;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 20px; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.45; }
+  #app { max-width: 1600px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+
+  header { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+  .goal { max-width: 60%; font-size: 1.05rem; }
+  .label { display: block; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+  .controls { display: flex; flex-direction: column; align-items: flex-end; gap: 0.45rem; }
+  .controls input[type=password] { width: 22rem; background: var(--panel); border: 1px solid var(--act-line); color: var(--text); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.8rem; }
+  .buttons { display: flex; gap: 0.4rem; }
+  button { background: var(--panel); border: 1px solid var(--act-line); color: var(--text); padding: 0.45rem 0.9rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .hint { font-size: 0.7rem; color: var(--muted); }
+
+  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; color: var(--muted); font-size: 0.85rem; }
+  .statusbar strong { color: var(--text); font-size: 1.1rem; }
+  .indicator { padding: 0.15rem 0.7rem; border-radius: 999px; font-size: 0.7rem; border: 1px solid var(--line); }
+  .indicator.running { color: var(--think); border-color: var(--think-line); animation: pulse 1.2s ease-in-out infinite; }
+  .indicator.replaying { color: var(--act); border-color: var(--act-line); }
+  .indicator.done { color: var(--obs); border-color: var(--obs-line); }
+  .indicator.error { color: var(--err); border-color: var(--err-line); }
+  @keyframes pulse { 50% { opacity: 0.45; } }
+
+  main { display: grid; grid-template-columns: 1fr 4rem 1fr; column-gap: 0.5rem; row-gap: 0.6rem; align-items: start; }
+  .colhead { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.3rem; }
+  .colhead.left { color: var(--think); } .colhead.right { color: var(--obs); }
+
+  .card { border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.9rem; animation: appear 0.25s ease-out; }
+  @keyframes appear { from { opacity: 0; transform: translateY(6px); } }
+  .tag { display: block; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; margin-bottom: 0.25rem; }
+  .think { background: var(--think-bg); border: 1px solid var(--think-line); } .think .tag { color: var(--think); }
+  .act { background: var(--act-bg); border: 1px solid var(--act-line); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; word-break: break-word; } .act .tag { color: var(--act); } .act b { color: var(--act); }
+  .observe { background: var(--obs-bg); border: 1px solid var(--obs-line); } .observe .tag { color: var(--obs); }
+  .done { background: var(--done-bg); border: 1px solid var(--done-line); } .done .tag { color: #8fb3ff; }
+  .error { background: var(--err-bg); border: 1px solid var(--err-line); color: var(--err); grid-column: 1 / -1; }
+  .cell.empty { min-height: 0; }
+
+  .gutter { display: flex; align-items: center; justify-content: center; min-height: 3rem; font-size: 1.6rem; }
+  .arrow.right { color: var(--act); animation: slideRight 0.9s ease-out; }
+  .arrow.left { color: var(--obs); animation: slideLeft 0.9s ease-out; }
+  @keyframes slideRight { from { transform: translateX(-2rem); opacity: 0; } }
+  @keyframes slideLeft { from { transform: translateX(2rem); opacity: 0; } }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.3rem; }
+  th, td { text-align: left; padding: 0.15rem 0.4rem; border-bottom: 1px solid var(--obs-line); }
+  th { color: var(--obs); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.8rem; margin: 0.3rem 0 0; font-size: 0.85rem; }
+  dt { color: var(--muted); } dd { margin: 0; }
+  pre { white-space: pre-wrap; font-family: inherit; margin: 0.3rem 0 0; }
+  .sent { color: var(--obs); font-weight: 600; margin-top: 0.4rem; }
+  .cursor { display: inline-block; width: 0.5rem; height: 1rem; background: var(--think); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .empty-state { grid-column: 1 / -1; color: var(--muted); text-align: center; padding: 3rem 0; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="goal"><span class="label">Goal</span>{{ goal }}</div>
+    <div class="controls">
+      <input type="password" v-model="apiKey" placeholder="OpenAI API key (kept in memory only)" autocomplete="off" spellcheck="false">
+      <div class="buttons">
+        <button class="primary" :disabled="!apiKey || busy" @click="start">Start</button>
+        <button :disabled="events.length === 0 || busy" @click="saveRun">Save run</button>
+        <button :disabled="busy" @click="$refs.file.click()">Load run</button>
+        <input ref="file" type="file" accept=".json,application/json" hidden @change="loadRun">
+        <button :disabled="status === 'running'" @click="reset">Reset</button>
+      </div>
+      <div class="hint" v-if="!apiKey">Enter an API key to Start, or Load a saved run.</div>
+    </div>
+  </header>
+
+  <div class="statusbar">
+    <div>Cycle <strong>{{ cycle }}</strong> · Think → Act → Observe</div>
+    <div class="indicator" :class="status">{{ statusLabel }}</div>
+  </div>
+
+  <main>
+    <div class="colhead left">Model</div>
+    <div class="colhead"></div>
+    <div class="colhead right">Your code</div>
+
+    <div v-if="rows.length === 0" class="empty-state">Press Start to run the agent, or Load a saved run.</div>
+
+    <template v-for="row in rows" :key="row.key">
+      <template v-if="row.error">
+        <div class="card error"><span class="tag">Error</span>{{ row.error.message }}</div>
+      </template>
+      <template v-else>
+        <!-- Think row -->
+        <div class="cell" v-if="row.reasoning">
+          <div class="card think"><span class="tag">Think</span><typewriter :text="row.reasoning.text || '(no explanation given)'"></typewriter></div>
+        </div>
+        <div class="cell empty" v-if="row.reasoning"></div>
+        <div class="cell empty" v-if="row.reasoning"></div>
+
+        <!-- Act / Observe row -->
+        <div class="cell" v-if="row.call">
+          <div class="card act"><span class="tag">Act · tool request</span><b>{{ row.call.name }}</b>({{ fmtArgs(row.call.args) }})</div>
+        </div>
+        <div class="cell gutter" v-if="row.call">
+          <span v-if="row.result" class="arrow left">⬅</span>
+          <span v-else class="arrow right">➜</span>
+        </div>
+        <div class="cell" v-if="row.call">
+          <div class="card observe" v-if="row.result">
+            <span class="tag">Observe · result of {{ row.result.name }}</span>
+            <tool-result :name="row.result.name" :output="row.result.output"></tool-result>
+          </div>
+        </div>
+
+        <!-- Done row -->
+        <div class="cell" v-if="row.done">
+          <div class="card done"><span class="tag">Done</span><typewriter :text="row.done.text"></typewriter></div>
+        </div>
+        <div class="cell empty" v-if="row.done"></div>
+        <div class="cell empty" v-if="row.done"></div>
+      </template>
+    </template>
+  </main>
+</div>
+
+<script src="vendor/vue.global.prod.js"></script>
+<script src="tools.js"></script>
+<script src="agent.js"></script>
+<script>
+  const REPLAY_DELAY_MS = 1500;
+  const MAX_TYPE_MS = 3000;        // a whole card finishes typing within this
+  const CHAR_MS = 33;              // ~30 chars/s ceiling
+
+  const Typewriter = {
+    props: { text: { type: String, default: "" } },
+    data() { return { shown: "" }; },
+    mounted() {
+      const delay = Math.min(CHAR_MS, MAX_TYPE_MS / Math.max(1, this.text.length));
+      let i = 0;
+      const tick = () => {
+        i += 1;
+        this.shown = this.text.slice(0, i);
+        if (i < this.text.length) this.timer = setTimeout(tick, delay);
+      };
+      tick();
+    },
+    unmounted() { clearTimeout(this.timer); },
+    template: `<span>{{ shown }}<span v-if="shown.length < text.length" class="cursor"></span></span>`,
+  };
+
+  const ToolResult = {
+    props: { name: String, output: Object },
+    template: `
+      <div>
+        <div v-if="output && output.error" class="error-text">⚠ {{ output.error }}</div>
+        <table v-else-if="name === 'find_journeys'">
+          <tr><th>Train</th><th>Departs</th><th>Arrives</th><th>Price</th></tr>
+          <tr v-for="j in output.journeys" :key="j.train"><td>{{ j.train }}</td><td>{{ j.departs }}</td><td>{{ j.arrives }}</td><td class="num">{{ j.price_eur }} €</td></tr>
+        </table>
+        <table v-else-if="name === 'find_hotels'">
+          <tr><th>Hotel</th><th>Distance</th><th>Per night</th></tr>
+          <tr v-for="h in output.hotels" :key="h.name"><td>{{ h.name }}</td><td class="num">{{ h.distance_km.toFixed(1) }} km</td><td class="num">{{ h.price_eur }} €</td></tr>
+        </table>
+        <dl v-else-if="name === 'get_site'">
+          <dt>Site</dt><dd>{{ output.name }}</dd>
+          <dt>Address</dt><dd>{{ output.address }}</dd>
+          <dt>Site manager</dt><dd>{{ output.site_manager }}</dd>
+        </dl>
+        <div v-else-if="name === 'send_itinerary'">
+          <pre>{{ output.text }}</pre>
+          <div class="sent">✓ sent to {{ output.to }}</div>
+        </div>
+        <pre v-else>{{ JSON.stringify(output, null, 2) }}</pre>
+      </div>`,
+  };
+
+  Vue.createApp({
+    components: { typewriter: Typewriter, "tool-result": ToolResult },
+    data() {
+      return { goal: GOAL, apiKey: "", events: [], status: "idle", runId: 0 };
+    },
+    computed: {
+      busy() { return this.status === "running" || this.status === "replaying"; },
+      cycle() { return this.events.reduce((m, e) => Math.max(m, e.cycle || 0), 0); },
+      statusLabel() {
+        return { idle: "ready", running: "thinking…", replaying: "replaying…", done: "done", error: "error" }[this.status];
+      },
+      rows() {
+        const byCycle = new Map();
+        const rows = [];
+        for (const e of this.events) {
+          if (e.type === "goal") continue;
+          if (e.type === "error") { rows.push({ key: "error-" + rows.length, error: e }); continue; }
+          let row = byCycle.get(e.cycle);
+          if (!row) { row = { key: "cycle-" + e.cycle, cycle: e.cycle }; byCycle.set(e.cycle, row); rows.push(row); }
+          if (e.type === "reasoning") row.reasoning = e;
+          else if (e.type === "tool_call") row.call = e;
+          else if (e.type === "tool_result") row.result = e;
+          else if (e.type === "done") row.done = e;
+        }
+        return rows;
+      },
+    },
+    methods: {
+      fmtArgs(args) {
+        return Object.entries(args || {})
+          .map(([k, v]) => `${k}: ${JSON.stringify(typeof v === "string" && v.length > 120 ? v.slice(0, 120) + "…" : v)}`)
+          .join(", ");
+      },
+      async start() {
+        const runId = ++this.runId;
+        this.events = [];
+        this.status = "running";
+        const t0 = Date.now();
+        await runAgent(this.goal, e => { if (runId === this.runId) this.events.push({ ...e, t: Date.now() - t0 }); },
+          { apiKey: this.apiKey, tools: TOOLS, toolDefs: TOOL_DEFS });
+        if (runId === this.runId) this.status = this.events.some(e => e.type === "error") ? "error" : "done";
+      },
+      saveRun() {
+        const blob = new Blob([JSON.stringify(this.events, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `run-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      },
+      async loadRun(ev) {
+        const file = ev.target.files[0];
+        ev.target.value = "";
+        if (!file) return;
+        let data;
+        try { data = validateRun(JSON.parse(await file.text())); }
+        catch (e) { this.events = [{ type: "error", message: e.message, t: 0 }]; this.status = "error"; return; }
+        const runId = ++this.runId;
+        this.events = [];
+        this.status = "replaying";
+        for (const e of data) {
+          if (runId !== this.runId) return;
+          this.events.push(e);
+          await new Promise(r => setTimeout(r, REPLAY_DELAY_MS));
+        }
+        if (runId === this.runId) this.status = data.some(e => e.type === "error") ? "error" : "done";
+      },
+      reset() {
+        this.runId += 1;
+        this.events = [];
+        this.status = "idle";
+      },
+    },
+  }).mount("#app");
+</script>
+</body>
+</html>
