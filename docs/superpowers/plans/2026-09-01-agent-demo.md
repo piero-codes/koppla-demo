@@ -805,7 +805,7 @@ Verify it parses and validates:
 ```bash
 node -e 'const {validateRun}=require("./demo/agent.js"); console.log(validateRun(require("./demo/runs/sample-run.json")).length, "events ok")'
 ```
-Expected: `15 events ok`.
+Expected: `14 events ok`.
 
 - [ ] **Step 3: Write `demo/index.html`**
 
