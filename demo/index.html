@@ -6,71 +6,89 @@
 <title>What is an agent? — Koppla demo</title>
 <style>
   :root {
-    --bg: #0f1117; --panel: #161923; --line: #2a2d3a; --text: #e8e8ec; --muted: #9aa0ad;
-    --think: #c9a3ff; --think-bg: #1e1a2e; --think-line: #4a3b7a;
-    --act: #ffd27a; --act-bg: #1a1d27; --act-line: #3a3d4a;
-    --obs: #7fd6a8; --obs-bg: #12211a; --obs-line: #2f6b4a;
-    --done-bg: #1b2a3a; --done-line: #2f6fed;
-    --err: #ff8a8a; --err-bg: #2e1616; --err-line: #7a3b3b;
-    --accent: #2f6fed;
+    --bg: #F5F7F9; --card: #FFFFFF; --line: #D9E1E8; --ink: #1B2733; --muted: #52616E;
+    --think: #1E5FA8; --think-bg: #EEF4FB; --think-line: #B7CFE8;
+    --act: #B65108; --act-bg: #FDF4EA; --act-line: #EBCBA4;
+    --obs: #217A46; --obs-bg: #EEF7F1; --obs-line: #BFDCCA;
+    --done-bg: #1E5FA8; --done-ink: #FFFFFF; --done-tag: #A9C7EC;
+    --err: #B3261E; --err-bg: #FBEDEB; --err-line: #E5B6B1;
   }
   * { box-sizing: border-box; }
   html { font-size: 20px; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.45; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Avenir Next", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
   #app { max-width: 1600px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
 
-  header { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
-  .goal { max-width: 60%; font-size: 1.05rem; }
-  .label { display: block; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+  header { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start;
+           padding-bottom: 0.9rem; border-bottom: 1.5px solid var(--line); }
+  .goal { max-width: 62%; font-size: 1.05rem; font-weight: 500; text-wrap: balance; }
+  .label { display: block; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+           color: var(--think); font-weight: 600; margin-bottom: 0.2rem; }
   .controls { display: flex; flex-direction: column; align-items: flex-end; gap: 0.45rem; }
-  .controls input[type=password] { width: 22rem; background: var(--panel); border: 1px solid var(--act-line); color: var(--text); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.8rem; }
-  .buttons { display: flex; gap: 0.4rem; }
-  button { background: var(--panel); border: 1px solid var(--act-line); color: var(--text); padding: 0.45rem 0.9rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
-  button.primary { background: var(--accent); border-color: var(--accent); font-weight: 600; }
-  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .buttons { display: flex; gap: 0.45rem; }
+  button { background: var(--card); border: 1.5px solid #C6D2DC; color: var(--ink); font: inherit;
+           font-size: 0.8rem; font-weight: 500; padding: 0.45rem 0.95rem; border-radius: 7px; cursor: pointer; }
+  button:hover:not(:disabled) { border-color: var(--think); }
+  button.primary { background: var(--think); border-color: var(--think); color: #fff; font-weight: 600; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button:focus-visible { outline: 2.5px solid var(--act); outline-offset: 2px; }
   .hint { font-size: 0.7rem; color: var(--muted); }
 
-  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; color: var(--muted); font-size: 0.85rem; }
-  .statusbar strong { color: var(--text); font-size: 1.1rem; }
-  .indicator { padding: 0.15rem 0.7rem; border-radius: 999px; font-size: 0.7rem; border: 1px solid var(--line); }
-  .indicator.running { color: var(--think); border-color: var(--think-line); animation: pulse 1.2s ease-in-out infinite; }
-  .indicator.replaying { color: var(--act); border-color: var(--act-line); }
-  .indicator.done { color: var(--obs); border-color: var(--obs-line); }
-  .indicator.error { color: var(--err); border-color: var(--err-line); }
-  @keyframes pulse { 50% { opacity: 0.45; } }
+  .statusbar { display: flex; justify-content: space-between; align-items: center;
+               padding: 0.7rem 0; color: var(--muted); font-size: 0.85rem; }
+  .statusbar strong { color: var(--ink); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+  .indicator { padding: 0.18rem 0.75rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+  .indicator.idle { background: var(--card); border: 1.5px solid var(--line); color: var(--muted); }
+  .indicator.running { background: var(--think-bg); color: var(--think); animation: pulse 1.2s ease-in-out infinite; }
+  .indicator.replaying { background: var(--act-bg); color: var(--act); }
+  .indicator.done { background: var(--obs-bg); color: var(--obs); }
+  .indicator.error { background: var(--err-bg); color: var(--err); }
+  @keyframes pulse { 50% { opacity: 0.5; } }
 
-  main { display: grid; grid-template-columns: 1fr 4rem 1fr; column-gap: 0.5rem; row-gap: 0.6rem; align-items: start; }
-  .colhead { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding-bottom: 0.3rem; }
+  main { display: grid; grid-template-columns: 1fr 4rem 1fr; column-gap: 0.5rem; row-gap: 0.65rem; align-items: start; }
+  .colhead { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+             color: var(--muted); padding: 0.4rem 0 0.15rem; }
   .colhead.left { color: var(--think); } .colhead.right { color: var(--obs); }
 
-  .card { border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.9rem; animation: appear 0.25s ease-out; }
+  .card { background: var(--card); border-radius: 8px; padding: 0.7rem 0.95rem; font-size: 0.85rem;
+          animation: appear 0.25s ease-out; }
   @keyframes appear { from { opacity: 0; transform: translateY(6px); } }
-  .tag { display: block; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; margin-bottom: 0.25rem; }
-  .think { background: var(--think-bg); border: 1px solid var(--think-line); } .think .tag { color: var(--think); }
-  .act { background: var(--act-bg); border: 1px solid var(--act-line); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; word-break: break-word; } .act .tag { color: var(--act); } .act b { color: var(--act); }
-  .observe { background: var(--obs-bg); border: 1px solid var(--obs-line); } .observe .tag { color: var(--obs); }
-  .done { background: var(--done-bg); border: 1px solid var(--done-line); } .done .tag { color: #8fb3ff; }
-  .error { background: var(--err-bg); border: 1px solid var(--err-line); color: var(--err); grid-column: 1 / -1; }
+  .tag { display: block; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+         font-weight: 700; margin-bottom: 0.3rem; }
+  .think { background: var(--think-bg); border: 1.5px solid var(--think-line); } .think .tag { color: var(--think); }
+  .act { background: var(--act-bg); border: 1.5px solid var(--act-line);
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.76rem; word-break: break-word; }
+  .act .tag { font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif; color: var(--act); }
+  .act b { color: var(--act); }
+  .observe { background: var(--obs-bg); border: 1.5px solid var(--obs-line); } .observe .tag { color: var(--obs); }
+  .done { background: var(--done-bg); border: 1.5px solid var(--done-bg); color: var(--done-ink); font-weight: 500; }
+  .done .tag { color: var(--done-tag); }
+  .error { background: var(--err-bg); border: 1.5px solid var(--err-line); color: var(--err);
+           font-weight: 500; grid-column: 1 / -1; }
+  .error .tag { color: var(--err); }
   .error-text { color: var(--err); font-weight: 600; }
   .cell.empty { min-height: 0; }
 
-  .gutter { display: flex; align-items: center; justify-content: center; min-height: 3rem; font-size: 1.6rem; }
+  .gutter { display: flex; align-items: center; justify-content: center; min-height: 3rem; font-size: 1.7rem; }
   .arrow.right { color: var(--act); animation: slideRight 0.9s ease-out; }
   .arrow.left { color: var(--obs); animation: slideLeft 0.9s ease-out; }
   @keyframes slideRight { from { transform: translateX(-2rem); opacity: 0; } }
   @keyframes slideLeft { from { transform: translateX(2rem); opacity: 0; } }
 
-  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.3rem; }
-  th, td { text-align: left; padding: 0.15rem 0.4rem; border-bottom: 1px solid var(--obs-line); }
-  th { color: var(--obs); font-weight: 600; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
-  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.8rem; margin: 0.3rem 0 0; font-size: 0.85rem; }
-  dt { color: var(--muted); } dd { margin: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.3rem; }
+  th, td { text-align: left; padding: 0.18rem 0.45rem; border-bottom: 1px solid var(--obs-line); }
+  th { color: var(--obs); font-weight: 700; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  td { font-variant-numeric: tabular-nums; }
+  td.num { text-align: right; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.8rem; margin: 0.3rem 0 0; font-size: 0.82rem; }
+  dt { color: var(--muted); } dd { margin: 0; font-weight: 500; }
   pre { white-space: pre-wrap; font-family: inherit; margin: 0.3rem 0 0; }
-  .sent { color: var(--obs); font-weight: 600; margin-top: 0.4rem; }
-  .cursor { display: inline-block; width: 0.5rem; height: 1rem; background: var(--think); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  .sent { color: var(--obs); font-weight: 700; margin-top: 0.4rem; }
+  .cursor { display: inline-block; width: 0.5rem; height: 1rem; background: currentColor;
+            vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
   .empty-state { grid-column: 1 / -1; color: var(--muted); text-align: center; padding: 3rem 0; font-size: 0.9rem; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -78,7 +96,6 @@
   <header>
     <div class="goal"><span class="label">Goal</span>{{ goal }}</div>
     <div class="controls">
-      <input type="password" v-model="apiKey" placeholder="OpenAI API key (kept in memory only)" autocomplete="off" spellcheck="false">
       <div class="buttons">
         <button class="primary" :disabled="!apiKey || busy" @click="start">Start</button>
         <button :disabled="events.length === 0 || busy" @click="saveRun">Save run</button>
@@ -86,7 +103,7 @@
         <input ref="file" type="file" accept=".json,application/json" hidden @change="loadRun">
         <button @click="reset">Reset</button>
       </div>
-      <div class="hint" v-if="!apiKey">Enter an API key to Start, or Load a saved run.</div>
+      <div class="hint" v-if="!apiKey">No API key found — add demo/env.local.js (see README), or Load a saved run.</div>
     </div>
   </header>
 

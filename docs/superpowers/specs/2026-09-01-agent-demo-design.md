@@ -63,8 +63,9 @@ split keeps every constraint — opens from disk, no build — and buys tests.)
 
 Constraints: plain JavaScript (JSDoc types allowed, no build step), no agent
 frameworks or SDKs, plain `fetch` to the API. Opens from disk via `file://`.
-The API key is a password input kept in memory only — never hard-coded, never
-persisted.
+The API key is read from a git-ignored `demo/env.local.js`
+(`window.OPENAI_API_KEY = "sk-..."`) — no UI field, never hard-coded, never
+committed.
 
 ## 4. Goal and system prompt
 
@@ -220,9 +221,9 @@ Vue 3 (vendored runtime build) app in the same file. State: `apiKey`, `events`,
 
 Layout, top to bottom:
 
-- **Header**: the goal text; password input for the key; buttons
-  **Start / Save run / Load run / Reset**. Start disabled until the key is
-  non-empty, with a hint. Save disabled until there are events.
+- **Header**: the goal text; buttons **Start / Save run / Load run / Reset**.
+  The key comes from git-ignored `demo/env.local.js`; when it is missing,
+  Start is disabled with a hint. Save disabled until there are events.
 - **Status bar**: left `Cycle N · Think → Act → Observe`; right a live indicator:
   pulsing "thinking…" while a fetch is in flight, "replaying…", "done", or
   "error".
@@ -240,7 +241,7 @@ Layout, top to bottom:
   - `error` → red card spanning both columns.
 - Live runs reveal queued events with a short stagger (`LIVE_STAGGER_MS`,
   ~0.8 s) between consecutive cards; the page auto-scrolls to the newest card.
-- Typography: base 20 px, dark high-contrast theme, readable on a projector.
+- Typography: base 20 px, light high-contrast theme (site-plan palette: blueprint blue for Think/Done, safety orange for Act, field green for Observe), readable on a projector.
   No settings, no chat input.
 
 Save: downloads `run-<timestamp>.json` containing the events array. Load: file

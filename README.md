@@ -17,12 +17,12 @@ slides/             the deck (built separately with frontend-slides)
 
 1. Clone the repo. No install, no build.
 2. Open `demo/index.html` in Chrome, Safari or Firefox (double-click it).
-3. Paste an OpenAI API key into the field. It stays in memory only — never
-   stored, never sent anywhere but api.openai.com. Optional: skip the pasting
-   by creating a git-ignored `demo/env.local.js` containing
-   `window.OPENAI_API_KEY = "sk-...";` — the field prefills from it. (If the
-   file is absent the browser logs a harmless file-not-found note in the
-   DevTools console.)
+3. Create a git-ignored `demo/env.local.js` next to `index.html` containing
+   `window.OPENAI_API_KEY = "sk-...";` — the page reads the key from it (there
+   is no key field in the UI). The key stays on your machine and is sent
+   nowhere but api.openai.com. Without the file, Start is disabled and a hint
+   points here; replay still works. (A file-not-found note in the DevTools
+   console when the file is absent is harmless.)
 4. Press **Start**. Watch the loop: Think (left) → Act (left, arrow) →
    Observe (right, arrow back) → … → Done.
 
@@ -35,7 +35,8 @@ Buttons: **Start** runs the agent · **Save run** downloads the run as JSON ·
    This must work with no network. It is your fallback on the day.
    (Record it first with the command under *Recording a fresh good run* if it
    is not in the repo yet.)
-2. Enter the key, **Start**. If it runs: done.
+2. Copy your `demo/env.local.js` onto the laptop (it is git-ignored, so the
+   clone does not include it), **Start**. If it runs: done.
 3. If Start fails with "Could not reach api.openai.com" (a proxy or browser
    policy blocking calls from a page opened from disk), serve the folder
    instead — no install needed:
