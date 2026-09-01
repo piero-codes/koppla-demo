@@ -1,0 +1,7 @@
+{
+  "name": "koppla-agent-demo",
+  "private": true,
+  "scripts": {
+    "test": "node --test \"demo/test/*.test.js\""
+  }
+}
