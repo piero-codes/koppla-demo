@@ -143,6 +143,7 @@
 <script src="vendor/vue.global.prod.js"></script>
 <script src="tools.js"></script>
 <script src="agent.js"></script>
+<script src="env.local.js"></script><!-- optional, git-ignored: window.OPENAI_API_KEY = "sk-..." (a file-not-found console note is harmless) -->
 <script>
   const REPLAY_DELAY_MS = 1500;
   const LIVE_STAGGER_MS = 800;
@@ -195,7 +196,7 @@
   Vue.createApp({
     components: { typewriter: Typewriter, "tool-result": ToolResult },
     data() {
-      return { goal: GOAL, apiKey: "", events: [], status: "idle", runId: 0 };
+      return { goal: GOAL, apiKey: window.OPENAI_API_KEY || "", events: [], status: "idle", runId: 0 };
     },
     computed: {
       busy() { return this.status === "running" || this.status === "replaying"; },

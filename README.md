@@ -18,7 +18,11 @@ slides/             the deck (built separately with frontend-slides)
 1. Clone the repo. No install, no build.
 2. Open `demo/index.html` in Chrome, Safari or Firefox (double-click it).
 3. Paste an OpenAI API key into the field. It stays in memory only — never
-   stored, never sent anywhere but api.openai.com.
+   stored, never sent anywhere but api.openai.com. Optional: skip the pasting
+   by creating a git-ignored `demo/env.local.js` containing
+   `window.OPENAI_API_KEY = "sk-...";` — the field prefills from it. (If the
+   file is absent the browser logs a harmless file-not-found note in the
+   DevTools console.)
 4. Press **Start**. Watch the loop: Think (left) → Act (left, arrow) →
    Observe (right, arrow back) → … → Done.
 

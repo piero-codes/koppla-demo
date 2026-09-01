@@ -196,3 +196,17 @@ test("validateRun accepts a real-looking run and rejects junk", () => {
   assert.throws(() => validateRun([{ type: "banana" }]), /Not a saved run.*banana/);
   assert.throws(() => validateRun([null]), /Not a saved run/);
 });
+
+test("default fetchFn survives a this-sensitive global fetch (browser Illegal invocation regression)", async (t) => {
+  const realFetch = globalThis.fetch;
+  const script = [doneTurn("ok")];
+  globalThis.fetch = function (url, init) {
+    if (this !== globalThis && this !== undefined) throw new TypeError("Illegal invocation");
+    const next = script.shift();
+    return Promise.resolve({ ok: true, status: 200, json: async () => next.body });
+  };
+  t.after(() => { globalThis.fetch = realFetch; });
+  const { events, emit } = collect();
+  await runAgent(GOAL, emit, { apiKey: "sk-test", tools: TOOLS, toolDefs: TOOL_DEFS });
+  assert.deepEqual(events.map(e => e.type), ["goal", "done"]);
+});

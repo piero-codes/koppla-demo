@@ -3,8 +3,8 @@
 // plain fetch and reports what happens through emit(event).
 
 const GOAL =
-  "Jonas needs to be at the Hamburg-Altona construction site on Thursday by 9:00 and stay one night. " +
-  "Train budget 80 €, hotel budget 120 €/night, hotel within 2 km of the site. Send him the itinerary.";
+  "Jonas needs to travel from Berlin to the Hamburg-Altona construction site on Thursday, arriving by 9:00, " +
+  "and stay one night. Train budget 80 €, hotel budget 120 €/night, hotel within 2 km of the site. Send him the itinerary.";
 
 const AGENT_DEFAULTS = {
   model: "gpt-5.6-terra",
@@ -62,7 +62,7 @@ async function callModel(input, opts) {
       body: JSON.stringify(body),
     });
   } catch (e) {
-    throw new Error("Could not reach api.openai.com — check the connection, or Load a saved run.");
+    throw new Error(`Could not reach api.openai.com — check the connection and the API key (a rejected key looks like a network error from a browser), or Load a saved run. (${e.message})`);
   }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -82,7 +82,7 @@ async function callModel(input, opts) {
  * @param {{ apiKey: string, tools: Record<string, Function>, toolDefs: object[], fetchFn?: Function }} options
  */
 async function runAgent(goal, emit, options) {
-  const opts = { ...AGENT_DEFAULTS, fetchFn: globalThis.fetch, ...options };
+  const opts = { ...AGENT_DEFAULTS, fetchFn: (...args) => globalThis.fetch(...args), ...options };
   const input = [{ role: "user", content: goal }];
   emit({ type: "goal", text: goal });
   try {

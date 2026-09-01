@@ -70,9 +70,9 @@ persisted.
 
 Goal (hard-coded, displayed in the header):
 
-> Jonas needs to be at the Hamburg-Altona construction site on Thursday by
-> 9:00 and stay one night. Train budget 80 €, hotel budget 120 €/night, hotel
-> within 2 km of the site. Send him the itinerary.
+> Jonas needs to travel from Berlin to the Hamburg-Altona construction site
+> on Thursday, arriving by 9:00, and stay one night. Train budget 80 €, hotel
+> budget 120 €/night, hotel within 2 km of the site. Send him the itinerary.
 
 System prompt (draft; tune during testing, never to name the "right" answers):
 
