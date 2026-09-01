@@ -42,13 +42,24 @@ laptop for the talk. Everything must run there without setup.
 koppla-demo/
   README.md                       how to run; work-laptop checklist; fallbacks
   .gitignore                      .superpowers/
+  package.json                    only a "test" script (node --test); no dependencies
   docs/superpowers/specs/         this file
   demo/
-    index.html                    styles, tools, loop, Vue app — one file
+    index.html                    styles + Vue app (UI only); loads the three scripts below
+    tools.js                      mock data, TOOLS functions, TOOL_DEFS schemas
+    agent.js                      GOAL, model constants, callModel, runAgent, validateRun
     vendor/vue.global.prod.js     pinned Vue 3 production build
-    runs/good-run.json            known-good recording for offline replay
+    runs/sample-run.json          hand-written fixture for building/checking the UI
+    runs/good-run.json            real recording for offline replay
+    test/                         node --test unit tests + live-check.js (real API)
   slides/                         Part B output (later)
 ```
+
+The three scripts are plain classic `<script src>` files (no ES modules — they
+are blocked on `file://`). `tools.js` and `agent.js` also `module.exports`
+under Node so the loop and tools are unit-tested without a browser, and
+`agent.js` is the file to show on a slide. (Brainstorming said "one file"; the
+split keeps every constraint — opens from disk, no build — and buys tests.)
 
 Constraints: plain JavaScript (JSDoc types allowed, no build step), no agent
 frameworks or SDKs, plain `fetch` to the API. Opens from disk via `file://`.
@@ -160,7 +171,7 @@ with `Authorization: Bearer <key>` and a JSON body built from a constants block
 at the top of the script:
 
 ```
-MODEL          = "<current OpenAI reasoning model id — verify in docs>"
+MODEL          = "gpt-5.6-terra"                // verified in docs 2026-09-01
 REASONING      = { effort: "low" }            // + summary: "auto" when SHOW_SUMMARIES
 SHOW_SUMMARIES = false
 PARALLEL_CALLS = false                         // parallel_tool_calls
