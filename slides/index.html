@@ -332,43 +332,20 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
                         transition: opacity .45s var(--ease-out-expo); }
 #s5 .zone > [data-on].now { opacity: 1; visibility: visible; }
 /* step 1 — what can be a tool */
-#s5 .canbe { flex-wrap: wrap; gap: 26px; align-content: center; }
-#s5 .canbe .cb { flex: 1 1 44%; max-width: calc(50% - 13px); display: flex; align-items: center; gap: 26px;
-                 border: 2.5px solid var(--grid); border-radius: 10px; background: var(--card); padding: 28px 36px; }
-#s5 .canbe .ic { font: 600 30px var(--font-mono); color: var(--blue); border: 2.5px solid var(--blue-line);
-                 border-radius: 10px; width: 92px; height: 92px; display: flex; align-items: center;
+#s5 .canbe { flex-wrap: wrap; gap: 30px; align-content: center; }
+#s5 .canbe .cb { flex: 1 1 44%; max-width: calc(50% - 15px); display: flex; align-items: center; gap: 30px;
+                 border: 2.5px solid var(--grid); border-radius: 10px; background: var(--card); padding: 34px 42px; }
+#s5 .canbe .ic { font: 600 32px var(--font-mono); color: var(--blue); border: 2.5px solid var(--blue-line);
+                 border-radius: 10px; width: 104px; height: 104px; display: flex; align-items: center;
                  justify-content: center; flex: none; background: var(--blue-bg); }
-#s5 .canbe .t { display: block; font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 33px; color: var(--ink); }
-#s5 .canbe .e { display: block; font: 600 21px var(--font-mono); color: var(--muted); margin-top: 6px; }
-/* step 2 — anatomy: what the model sees vs what runs */
-#s5 .anatomy { align-items: center; gap: 0; }
-#s5 .an { flex: 1; border: 2.5px solid; border-radius: 10px; background: var(--card); padding: 36px 44px; }
-#s5 .an .lbl { display: block; font: 600 21px var(--font-mono); letter-spacing: .14em; margin-bottom: 16px; }
-#s5 .an.front { border-color: var(--blue); background: var(--blue-bg); }
-#s5 .an.front .lbl { color: var(--blue); }
-#s5 .an.front .name { font: 600 32px var(--font-mono); color: var(--orange); margin-bottom: 12px; }
-#s5 .an.front .desc { font-size: 29px; font-weight: 500; line-height: 1.4; }
-#s5 .an.behind { border-color: var(--orange); background: var(--orange-bg); }
-#s5 .an.behind .lbl { color: var(--orange); }
-#s5 .an.behind ul { margin: 0; padding: 0; }
-#s5 .an.behind li { font-size: 26px; font-weight: 500; line-height: 1.5; list-style: none; }
-#s5 .an.behind li b { color: var(--orange); }
-#s5 .an-arr { padding: 0 20px; font: 600 22px var(--font-mono); color: var(--muted); text-align: center; line-height: 1.6; flex: none; }
-/* step 3 — the round trip */
-#s5 .roundtrip { align-items: center; gap: 22px; }
-#s5 .rt-box { border: 2.5px solid; border-radius: 10px; padding: 30px 36px; background: var(--card); flex: 1; }
-#s5 .rt-box .t { display: block; font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 38px; }
-#s5 .rt-box .d { display: block; font: 600 22px var(--font-mono); color: var(--muted); margin-top: 10px; }
-#s5 .rt-box.b { border-color: var(--blue); } #s5 .rt-box.b .t { color: var(--blue); }
-#s5 .rt-box.o { border-color: var(--orange); } #s5 .rt-box.o .t { color: var(--orange); }
-#s5 .rt-box.g { border-color: var(--green); } #s5 .rt-box.g .t { color: var(--green); }
-#s5 .rt-arr { font: 600 24px var(--font-mono); white-space: nowrap; }
-#s5 .rt-arr.o { color: var(--orange); } #s5 .rt-arr.g { color: var(--green); }
-/* step 4 — the four demo tools */
-#s5 .zone > .tools { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; }
-#s5 .tool { background: var(--card); border: 2px solid var(--grid); border-radius: 10px; padding: 24px 34px; }
-#s5 .tool .name { font: 600 28px var(--font-mono); color: var(--orange); margin-bottom: 8px; }
-#s5 .tool .desc { font-size: 24px; font-weight: 500; line-height: 1.35; color: var(--ink); }
+#s5 .canbe .t { display: block; font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 36px; color: var(--ink); }
+#s5 .canbe .e { display: block; font: 600 22px var(--font-mono); color: var(--muted); margin-top: 8px; }
+/* step 2 — the four demo tools, each mapped to its real-life counterpart */
+#s5 .zone > .tools { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 22px; }
+#s5 .tool { background: var(--card); border: 2px solid var(--grid); border-radius: 10px; padding: 26px 36px; }
+#s5 .tool .name { font: 600 29px var(--font-mono); color: var(--orange); margin-bottom: 8px; }
+#s5 .tool .desc { font-size: 25px; font-weight: 500; line-height: 1.38; color: var(--ink); }
+#s5 .tool .could { margin-top: 14px; font: 600 20px var(--font-mono); color: var(--green); }
 #s5 .cap { position: absolute; left: 120px; right: 120px; top: 894px; font: 600 29px var(--font-mono);
            color: var(--ink); display: none; }
 
@@ -600,8 +577,8 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 04 / 11</span></div>
     </section>
 
-    <!-- ============ SLIDE 5 · WHAT IS A TOOL (interactive, 5 inner steps) ============ -->
-    <section class="slide" id="s5" data-steps="5">
+    <!-- ============ SLIDE 5 · WHAT IS A TOOL (interactive, 3 inner steps) ============ -->
+    <section class="slide" id="s5" data-steps="3">
       <div class="frame"></div><span class="cross tr">+</span>
       <div class="eyebrow reveal ed">TOOLS</div>
       <div class="stephint ed">→ to step through</div>
@@ -613,43 +590,24 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
           <div class="cb"><span class="ic">SQL</span><span><span class="t ed">A database</span><span class="e ed">look up a project, a schedule, a customer</span></span></div>
           <div class="cb"><span class="ic">✉</span><span><span class="t ed">A real-world action</span><span class="e ed">send an email · create a ticket · edit a file</span></span></div>
         </div>
-        <div class="anatomy" data-on="2">
-          <div class="an front"><span class="lbl ed">WHAT THE MODEL SEES</span>
-            <div class="name">get_site</div>
-            <div class="desc ed">“Look up a Koppla construction site by name. Returns its street address and site manager.”</div>
-          </div>
-          <span class="an-arr">plain<br>words<br>⟷<br>real<br>code</span>
-          <div class="an behind"><span class="lbl ed">WHAT ACTUALLY RUNS</span>
-            <ul>
-              <li class="ed"><b>In the demo:</b> a small function we wrote.</li>
-              <li class="ed"><b>In real life:</b> the same slot could call a company database or an external API.</li>
-              <li class="ed">The model can't tell the difference — and doesn't need to.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="roundtrip" data-on="3" aria-hidden="true">
-          <div class="rt-box b"><span class="t ed">Model</span><span class="d ed">writes a request — just text</span></div>
-          <div class="rt-arr o">── request ─➜</div>
-          <div class="rt-box o"><span class="t ed">Your code</span><span class="d ed">runs the real thing</span></div>
-          <div class="rt-arr g">── result ─➜</div>
-          <div class="rt-box g"><span class="t ed">Context</span><span class="d ed">result pasted back — the model reads it</span></div>
-        </div>
-        <div class="tools" data-on="4">
+        <div class="tools" data-on="2">
           <div class="tool"><div class="name">get_site</div>
-            <div class="desc ed">“Look up a Koppla construction site by name. Returns its street address and site manager.”</div></div>
+            <div class="desc ed">“Look up a Koppla construction site by name. Returns its street address and site manager.”</div>
+            <div class="could ed">in real life: your company's project database</div></div>
           <div class="tool"><div class="name">find_journeys</div>
-            <div class="desc ed">“Find train connections between two cities for Thursday morning. Returns all available options; check arrival times and prices yourself.”</div></div>
+            <div class="desc ed">“Find train connections between two cities for Thursday morning. Returns all available options; check arrival times and prices yourself.”</div>
+            <div class="could ed">in real life: Deutsche Bahn's timetable API</div></div>
           <div class="tool"><div class="name">find_hotels</div>
-            <div class="desc ed">“Find hotels near a street address (use the address returned by get_site). Returns all options with distance and price; apply any budget or distance limits yourself.”</div></div>
+            <div class="desc ed">“Find hotels near a street address (use the address returned by get_site). Returns all options with distance and price; apply any budget or distance limits yourself.”</div>
+            <div class="could ed">in real life: Booking.com's API</div></div>
           <div class="tool"><div class="name">send_itinerary</div>
-            <div class="desc ed">“Send a travel itinerary as a message. ‘to’ is the recipient's name.”</div></div>
+            <div class="desc ed">“Send a travel itinerary as a message. ‘to’ is the recipient's name.”</div>
+            <div class="could ed">in real life: email · Slack · SMS</div></div>
         </div>
       </div>
       <div class="cap" data-on="0">The model can't touch the world by itself. Tools are what we choose to hand it.</div>
       <div class="cap" data-on="1">Anything code can do can be a tool — <span class="hl-blue">our own code, or someone else's</span>.</div>
-      <div class="cap" data-on="2">The model only ever sees the <span class="hl-blue">plain-words side</span>. The real code stays on <span class="hl-orange">our side</span>.</div>
-      <div class="cap" data-on="3">The model never runs a tool — it <span class="hl-blue">asks</span>, our code <span class="hl-orange">executes</span>, the result <span class="hl-green">comes back</span>.</div>
-      <div class="cap" data-on="4">↑ word for word, the four descriptions the model reads in the demo</div>
+      <div class="cap" data-on="2">↑ word for word what the model reads in the demo — <span class="hl-green">today our code, tomorrow a real API</span></div>
       <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 05 / 11</span></div>
     </section>
 
