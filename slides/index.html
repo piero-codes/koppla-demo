@@ -355,10 +355,10 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
 #s6 .eyebrow { position: absolute; left: 120px; top: 120px; }
 #s6 h2 { position: absolute; left: 120px; top: 178px; }
 #s6 .ladder { position: absolute; left: 120px; right: 120px; top: 330px; display: flex; flex-direction: column-reverse; gap: 22px; cursor: pointer; }
-#s6 .rung { display: grid; grid-template-columns: 470px 1fr auto; align-items: center; gap: 36px;
+#s6 .rung { display: grid; grid-template-columns: 500px 1fr auto; align-items: center; gap: 36px;
             border: 3px solid var(--grid); border-radius: 10px; background: var(--card);
             padding: 26px 40px; opacity: .55; transition: all .35s var(--ease-out-expo); }
-#s6 .rung .r-name { font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 42px; color: var(--muted); }
+#s6 .rung .r-name { font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 38px; white-space: nowrap; color: var(--muted); }
 #s6 .rung .r-ex { font-size: 30px; font-weight: 500; color: var(--muted); opacity: 0; transform: translateX(-14px); transition: all .4s var(--ease-out-expo); }
 #s6 .rung.lit { opacity: 1; }
 #s6 .rung.lit .r-ex { opacity: 1; transform: none; }
@@ -436,12 +436,20 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
 /* ===========================================
    SLIDE 9 — WHAT THIS MEANS FOR KOPPLA
    =========================================== */
-#s9 .eyebrow { position: absolute; left: 120px; top: 130px; }
-#s9 .old { position: absolute; left: 120px; top: 240px; font-stretch: 112%; font-weight: 700; font-size: 60px; color: var(--muted); }
+#s9 .eyebrow { position: absolute; left: 120px; top: 110px; }
+#s9 .old { position: absolute; left: 120px; top: 186px; font-stretch: 112%; font-weight: 700; font-size: 52px; color: var(--muted); }
 #s9 .old s { text-decoration-thickness: 5px; text-decoration-color: var(--red); }
 #s9 .old .was { font: 600 22px var(--font-mono); color: var(--muted); display: block; margin-bottom: 10px; letter-spacing: .18em; }
-#s9 .new { position: absolute; left: 120px; right: 110px; top: 430px; }
-#s9 .new .now-lbl { font: 600 22px var(--font-mono); color: var(--orange); display: block; margin-bottom: 18px; letter-spacing: .18em; }
+#s9 .now-lbl { position: absolute; left: 120px; top: 352px; font: 600 22px var(--font-mono); color: var(--orange); letter-spacing: .18em; }
+#s9 .qgrid { position: absolute; left: 120px; right: 120px; top: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+#s9 .qcard { background: var(--card); border: 2.5px solid var(--grid); border-radius: 10px; padding: 28px 38px; }
+#s9 .qcard .qtag { display: block; font: 600 20px var(--font-mono); letter-spacing: .16em; margin-bottom: 10px; }
+#s9 .qcard .qq { font-stretch: 112%; font-weight: 800; font-size: 42px; line-height: 1.12; }
+#s9 .qcard .qs { font: 600 20px var(--font-mono); color: var(--muted); margin-top: 12px; }
+#s9 .qcard.t { border-color: var(--orange); } #s9 .qcard.t .qtag { color: var(--orange); }
+#s9 .qcard.a { border-color: var(--blue); } #s9 .qcard.a .qtag { color: var(--blue); }
+#s9 .qcard.f { border-color: var(--red-line); } #s9 .qcard.f .qtag { color: var(--red); }
+#s9 .qcard.c { border-color: var(--green); } #s9 .qcard.c .qtag { color: var(--green); }
 
 /* ===========================================
    SLIDE 10 — QUESTIONS
@@ -619,7 +627,7 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="stephint ed">→ or click a rung</div>
       <div class="ladder reveal d2" id="ladder">
         <div class="rung" data-on="1"><div class="r-name ed">1 · Autocomplete</div><div class="r-ex ed">Finishes your sentence.</div><div class="r-badge ed">your phone keyboard</div></div>
-        <div class="rung" data-on="2"><div class="r-name ed">2 · Chat</div><div class="r-ex ed">Answers when asked. Between answers, you do everything.</div><div class="r-badge ed">ChatGPT</div></div>
+        <div class="rung" data-on="2"><div class="r-name ed">2 · Chat</div><div class="r-ex ed">Answers when asked. Between answers, you do everything.</div><div class="r-badge ed">a plain Q&amp;A chatbot</div></div>
         <div class="rung" data-on="3"><div class="r-name ed">3 · Fixed workflow</div><div class="r-ex ed">Same steps in the same order, every time. A pipeline with an LLM inside.</div><div class="r-badge ed">a Zapier automation</div></div>
         <div class="rung" data-on="4"><div class="r-name ed">4 · Agent</div><div class="r-ex ed">Picks its own next step until the goal is met.</div><div class="r-badge ed">Claude Code · this demo</div></div>
       </div>
@@ -695,8 +703,20 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="frame"></div><span class="cross tl">+</span><span class="cross bl">+</span>
       <div class="eyebrow reveal ed">SO WHAT?</div>
       <div class="old reveal d1"><span class="was ed">THE QUESTION USED TO BE</span><s class="ed">“What can the model say?”</s></div>
-      <div class="new reveal d3"><span class="now-lbl ed">THE QUESTION NOW</span>
-        <div class="statement ed">“What <span class="hl-orange">tools</span> do we give it — and what do we let it do <span class="hl-blue">alone</span>?”</div>
+      <span class="now-lbl reveal d2 ed">THE QUESTIONS NOW — THE REAL CHALLENGES OF AGENTS</span>
+      <div class="qgrid">
+        <div class="qcard t reveal d3"><span class="qtag ed">TOOLS</span>
+          <div class="qq ed">What do we hand it?</div>
+          <div class="qs ed">every tool is a permission</div></div>
+        <div class="qcard a reveal d3"><span class="qtag ed">AUTONOMY</span>
+          <div class="qq ed">What may it do alone?</div>
+          <div class="qs ed">and where must a human approve?</div></div>
+        <div class="qcard f reveal d4"><span class="qtag ed">FAILURE</span>
+          <div class="qq ed">What happens when it fails?</div>
+          <div class="qs ed">cap the loops · plan the fallback · make it undoable</div></div>
+        <div class="qcard c reveal d4"><span class="qtag ed">TRUST</span>
+          <div class="qq ed">How do we check its work?</div>
+          <div class="qs ed">readable Think steps · audit every decision</div></div>
       </div>
       <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 10 / 11</span></div>
     </section>
