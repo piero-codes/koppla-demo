@@ -1,0 +1,541 @@
+<title>Agent Talk Script</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #F5F7F9; --card: #FFFFFF; --ink: #1B2733; --muted: #52616E; --line: #D9E1E8;
+    --blue: #1E5FA8; --blue-bg: #EEF4FB;
+    --orange: #B65108; --orange-bg: #FDF4EA;
+    --green: #217A46; --green-bg: #EEF7F1;
+    --red: #B3261E; --red-bg: #FBEDEB;
+    --grid: rgba(30, 95, 168, 0.07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12181F; --card: #1A222B; --ink: #E8EDF2; --muted: #9AA8B4; --line: #2A3644;
+      --blue: #82B1E4; --blue-bg: #1B2735;
+      --orange: #E29A5C; --orange-bg: #2A2118;
+      --green: #6CBE8C; --green-bg: #18291F;
+      --red: #E58A82; --red-bg: #2E1B19;
+      --grid: rgba(130, 177, 228, 0.06);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12181F; --card: #1A222B; --ink: #E8EDF2; --muted: #9AA8B4; --line: #2A3644;
+    --blue: #82B1E4; --blue-bg: #1B2735;
+    --orange: #E29A5C; --orange-bg: #2A2118;
+    --green: #6CBE8C; --green-bg: #18291F;
+    --red: #E58A82; --red-bg: #2E1B19;
+    --grid: rgba(130, 177, 228, 0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+    font-family: "Archivo", system-ui, sans-serif; font-size: 16px; line-height: 1.6;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  .eyebrow { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+             text-transform: uppercase; color: var(--blue); font-weight: 600; }
+  h1 { font-size: 2.3rem; font-weight: 800; line-height: 1.1; margin: 0.35rem 0 0.6rem; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); max-width: 60ch; margin: 0 0 0.4rem; }
+  .private { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; font-weight: 600;
+             color: var(--orange); border: 1.5px solid var(--orange); border-radius: 999px; padding: 0.15rem 0.7rem;
+             letter-spacing: 0.08em; margin-top: 0.5rem; }
+
+  h2 { font-size: 1.35rem; font-weight: 700; margin: 0; letter-spacing: -0.005em; }
+  section { margin-top: 2.6rem; }
+  .slidehead { display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap;
+               border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem; margin-bottom: 1.1rem; }
+  .snum { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 600; color: var(--bg);
+          background: var(--ink); padding: 0.2rem 0.55rem; border-radius: 4px; letter-spacing: 0.08em; }
+  .stime { margin-left: auto; font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; color: var(--muted); }
+  .stime b { color: var(--ink); }
+
+  .say, .do, .note, .warn { border-radius: 0 8px 8px 0; padding: 0.85rem 1.1rem; margin: 0.9rem 0; }
+  .say  { background: var(--blue-bg); border-left: 4px solid var(--blue);
+          font-family: "Lora", Georgia, serif; font-size: 1.06rem; line-height: 1.65; }
+  .say p { margin: 0 0 0.7rem; } .say p:last-child { margin-bottom: 0; }
+  .do   { background: var(--orange-bg); border-left: 4px solid var(--orange);
+          font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.82rem; line-height: 1.7; }
+  .note { background: var(--green-bg); border-left: 4px solid var(--green); font-size: 0.92rem; }
+  .warn { background: var(--red-bg); border-left: 4px solid var(--red); font-size: 0.92rem; }
+  .blabel { display: block; font-family: "IBM Plex Mono", monospace; font-size: 0.66rem; font-weight: 600;
+            letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.45rem; }
+  .say .blabel { color: var(--blue); } .do .blabel { color: var(--orange); }
+  .note .blabel { color: var(--green); } .warn .blabel { color: var(--red); }
+  .note p, .warn p { margin: 0 0 0.6rem; } .note p:last-child, .warn p:last-child { margin-bottom: 0; }
+
+  em.beat { font-style: normal; color: var(--muted); font-family: "Archivo", sans-serif; font-size: 0.82rem; }
+  .say b { font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.8rem 0;
+          background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 0.45rem 0.8rem; border-bottom: 1px solid var(--line); }
+  th { font-family: "IBM Plex Mono", monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+       color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; }
+  .tscroll { overflow-x: auto; }
+
+  code, .k { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.85em;
+             background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 0.05em 0.35em; }
+  .cheat { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; padding: 1.1rem 1.3rem; margin: 1rem 0; }
+  .cheat h3 { margin: 0 0 0.6rem; font-size: 0.95rem; }
+  .cheat ul { margin: 0; padding-left: 1.1rem; }
+  .cheat li { margin: 0.3rem 0; font-size: 0.9rem; }
+  .hl-b { color: var(--blue); font-weight: 600; } .hl-o { color: var(--orange); font-weight: 600; }
+  .hl-g { color: var(--green); font-weight: 600; }
+
+  .qa { margin: 1rem 0; }
+  .qa dt { font-weight: 700; margin-top: 1rem; }
+  .qa dd { margin: 0.3rem 0 0; color: var(--ink); }
+  .qa dd .short { font-family: "Lora", serif; }
+
+  .toc { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1.2rem 0 0; }
+  .toc a { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; text-decoration: none; color: var(--blue);
+           border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 0.25rem 0.7rem; }
+  .toc a:hover { border-color: var(--blue); }
+  a { color: var(--blue); }
+  .sources { font-size: 0.8rem; color: var(--muted); border-top: 1.5px solid var(--line); margin-top: 3rem; padding-top: 1rem; }
+  .sources ul { padding-left: 1.1rem; margin: 0.4rem 0 0; }
+  hr.cut { border: 0; border-top: 2px dashed var(--line); margin: 2.6rem 0 0; }
+  :focus-visible { outline: 2.5px solid var(--orange); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Koppla · Lunch &amp; Learn 03 · 15 minutes</div>
+  <h1>Speaker script — “What is an AI agent?”</h1>
+  <p class="lede">Everything to say, slide by slide, plus the demo narration and Q&amp;A prep.
+     Blue serif blocks are <b>your spoken lines</b> — read them aloud a few times and then speak freely; they're a floor, not a cage.
+     Orange blocks are <b>things to do</b>. Green blocks are <b>background for you</b> — never read them out.</p>
+  <span class="private">FOR YOUR EYES ONLY — DO NOT SHARE THIS PAGE</span>
+
+  <nav class="toc">
+    <a href="#prep">Prep</a><a href="#timing">Timing</a><a href="#s1">S1 Open</a><a href="#s2">S2 Recap</a>
+    <a href="#s3">S3 Chatbot vs agent</a><a href="#s4">S4 The loop</a><a href="#s5">S5 Tools</a>
+    <a href="#s6">S6 Ladder</a><a href="#s7">S7 Demo setup</a><a href="#demo">Demo</a>
+    <a href="#formula">S8 Formula</a><a href="#s8">S9 Failures</a><a href="#s9">S10 Challenges</a><a href="#s10">S11 Close</a><a href="#qa">Q&amp;A</a>
+  </nav>
+
+  <!-- ================= PREP ================= -->
+  <section id="prep">
+    <div class="slidehead"><h2>Before the talk</h2><span class="stime">day before + 10 min before</span></div>
+    <div class="do"><span class="blabel">Checklist</span>
+      ☐ Day before, on the work laptop: open <span class="k">demo/index.html</span>, press Start once, confirm a full run.<br>
+      ☐ Fresh <span class="k">good-run.json</span> downloaded and test-loaded via <b>Load run</b>.<br>
+      ☐ Two browser tabs ready: <b>slides</b> and <b>demo</b>. Nothing else in that window.<br>
+      ☐ In Google Meet, share <b>that one window</b> (or tab) — never “entire screen”. This page stays on another window or your phone.<br>
+      ☐ Notifications off (macOS Focus mode).<br>
+      ☐ Deck: <span class="k">→ / Space</span> advances. Slides 4 and 6 step through their diagram first. Demo: <b>Next ▸</b> or <span class="k">→ / Space</span> reveals one card.
+    </div>
+    <div class="cheat">
+      <h3>Numbers cheat card (the demo's world)</h3>
+      <ul>
+        <li>Constraints: arrive <b>≤ 9:00</b> · train <b>≤ 80 €</b> · hotel <b>≤ 120 €/night</b> · within <b>2 km</b> of site</li>
+        <li>Winning train: <span class="hl-o">ICE 1601</span>, Berlin 06:55 → Hamburg 08:45, <b>69 €</b> — the <em>only</em> one of 7 that fits both limits</li>
+        <li>Winning hotel: <span class="hl-g">Hotel Altona Park</span>, 1.2 km, <b>95 €</b> (closest one, Elbblick 0.8 km, is 130 € — over budget)</li>
+        <li>Site: Harkortstraße 12, 22765 Hamburg · manager Petra Lindqvist</li>
+        <li>Tools: <span class="k">get_site</span> · <span class="k">find_journeys</span> · <span class="k">find_hotels</span> · <span class="k">send_itinerary</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= TIMING ================= -->
+  <section id="timing">
+    <div class="slidehead"><h2>Timing map</h2><span class="stime">total <b>15:00</b></span></div>
+    <div class="tscroll"><table>
+      <tr><th>Segment</th><th>Slides</th><th>Budget</th><th>Clock</th></tr>
+      <tr><td>Opening</td><td>1</td><td class="num">0:45</td><td class="num">0:45</td></tr>
+      <tr><td>Recap + the puzzle</td><td>2</td><td class="num">1:00</td><td class="num">1:45</td></tr>
+      <tr><td>Chatbot vs agent</td><td>3</td><td class="num">1:00</td><td class="num">2:45</td></tr>
+      <tr><td>The loop</td><td>4</td><td class="num">2:00</td><td class="num">4:45</td></tr>
+      <tr><td>Tools</td><td>5</td><td class="num">1:15</td><td class="num">6:00</td></tr>
+      <tr><td>Autonomy ladder</td><td>6</td><td class="num">0:45</td><td class="num">6:45</td></tr>
+      <tr><td>Demo hand-off</td><td>7</td><td class="num">0:30</td><td class="num">7:15</td></tr>
+      <tr><td><b>Live demo</b></td><td>—</td><td class="num">3:45</td><td class="num">11:00</td></tr>
+      <tr><td>The formula (recap)</td><td>8</td><td class="num">0:45</td><td class="num">11:45</td></tr>
+      <tr><td>Where it goes wrong</td><td>9</td><td class="num">1:15</td><td class="num">13:00</td></tr>
+      <tr><td>The questions now</td><td>10</td><td class="num">1:00</td><td class="num">14:00</td></tr>
+      <tr><td>Close + questions</td><td>11</td><td class="num">1:00</td><td class="num">15:00</td></tr>
+    </table></div>
+    <div class="note"><span class="blabel">If you're running long</span>
+      The pressure valve is the demo: reveal cycle 3's Think card, skip straight to the final Done card
+      (“I'll fast-forward — it books the hotel the same way”), and jump to the formula slide.
+      Never cut slide 4, the formula slide, or slide 9 — they carry the lessons people should leave with.</div>
+  </section>
+
+  <!-- ================= S1 ================= -->
+  <section id="s1">
+    <div class="slidehead"><span class="snum">SLIDE 1</span><h2>Opening</h2><span class="stime"><b>0:45</b> · clock 0:45</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Hi everyone — welcome to lunch &amp; learn number three. Today's question is the one behind
+         every AI headline right now: <b>what is an AI agent?</b></p>
+      <p>You've heard the word everywhere. By the end of these fifteen minutes you'll know exactly what it means —
+         and you'll watch a real one do a real job, live. Spoiler: it's not magic. It's one surprisingly simple loop,
+         the one at the bottom of this slide: think, act, observe, repeat.</p>
+    </div>
+    <div class="note"><span class="blabel">Why this opening works</span>
+      You're making two promises — a definition and a live demo — and both get paid off. Naming
+      “think → act → observe” now plants the phrase; by slide 4 it feels familiar instead of new.</div>
+  </section>
+
+  <!-- ================= S2 ================= -->
+  <section id="s2">
+    <div class="slidehead"><span class="snum">SLIDE 2</span><h2>Recap + the puzzle</h2><span class="stime"><b>1:00</b> · clock 1:45</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Quick rewind. Session one: a language model does exactly one thing — it <b>predicts the next word</b>.
+         Look at the screen: “Once upon a…” — <em>(pause)</em> everyone in this call just finished that sentence
+         in their head. <b>Time.</b> That's the whole machine. <em>(point at the bars)</em> The model holds
+         candidates — “time”, ninety-four percent — picks the likeliest word, writes it down, and does it again
+         for the next word. Not a database, not rules — what you just did, over and over, at scale.</p>
+      <p>And then in session two we watched Claude Code <b>edit files and run commands</b> on a real computer.</p>
+      <p><em>(pause)</em> Those two facts don't fit together. If Claude is just a text predictor…
+         <b>how can Claude Code actually do things?</b> Hold that question — it's the whole talk,
+         and by the end you'll have the exact answer.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      <p>The percentages on the slide are illustrative, not real model output — if anyone asks, say so plainly;
+         the mechanism (a probability over next words, pick and repeat) is exactly right.</p>
+      <p>The tension is real, not rhetorical: a model's output is always just text — nothing else ever leaves it.
+         Everything “agentic” comes from what other software does with that text. You resolve this twice:
+         mechanically on slide 4, and by name on the formula slide after the demo.</p></div>
+  </section>
+
+  <!-- ================= S3 ================= -->
+  <section id="s3">
+    <div class="slidehead"><span class="snum">SLIDE 3</span><h2>Chatbot vs agent</h2><span class="stime"><b>1:00</b> · clock 2:45</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>There are two ways to use the exact same model.</p>
+      <p>A <b>chatbot</b> is a consultant you call. Follow the little arrows on the left card:
+         <b>you</b> ask, the <b>model</b> answers — and the arrow comes straight back to <b>you</b>, holding the hammer.
+         “Which train should Jonas take?” It tells you. You still open the booking site. You do the work.</p>
+      <p>An <b>agent</b> is an assistant you brief. Look where the arrows go on the right: you hand it a <b>goal</b>,
+         and then it's the <b>model and the tools</b>, back and forth, around and around — you're not in the middle
+         anymore. It comes back when the job is <b>done</b>. Same brain. Different job description.</p>
+      <p>One line to remember: a chatbot <b>answers</b>. An agent <b>acts</b>.</p>
+      <p>And that's not my definition. Anthropic — the people behind Claude — define it in basically one line:
+         <em>(read the quote)</em> “agents are models using tools <b>in a loop</b>.” Tools. In a loop.
+         That loop deserves its own slide — let me draw it for you.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      The on-slide quote is a faithful condensation of Anthropic's definition in “Building Effective Agents”:
+      agents are “LLMs using tools based on environmental feedback in a loop.” If someone pushes on the definition,
+      that's the authoritative source. The quote is also your transition machine: its last three words
+      (“in a loop”) hand you slide 4.</div>
+  </section>
+
+  <!-- ================= S4 ================= -->
+  <section id="s4">
+    <div class="slidehead"><span class="snum">SLIDE 4</span><h2>The loop</h2><span class="stime"><b>2:00</b> · clock 4:45</span></div>
+    <div class="do"><span class="blabel">Do</span>
+      This slide steps: press <span class="k">→</span> seven times, one line of script per press.
+      Don't rush — the diagram lights up as you speak.</div>
+    <div class="say"><span class="blabel">Say — one beat per arrow press</span>
+      <p><em class="beat">0 · empty diagram —</em> Here's the answer to the puzzle. Everything an agent does — every agent,
+         from Claude Code to the demo you're about to see — is this one shape.</p>
+      <p><em class="beat">1 · Goal —</em> It starts with a goal in plain words. No script, no flowchart — a sentence,
+         like you'd brief a colleague. <em>(point at the grey line)</em> Ours: Jonas needs a train from Berlin to
+         our Hamburg-Altona construction site, there by nine on Thursday.</p>
+      <p><em class="beat">2 · Think —</em> <b>Think</b>: the model reads everything so far and decides what should happen next.
+         And look at the line underneath — before it can pick trains or a hotel, it wants
+         <em>the site's exact address</em>. Nobody told it to start there. It decided.</p>
+      <p><em class="beat">3 · Act —</em> <b>Act</b>: it writes a <b>request</b> to use a tool — there it is:
+         <em>get_site, “Hamburg-Altona”</em>. And notice — that request is just text. Text is still the only thing
+         a model can produce. It hasn't done anything yet. It has <b>asked</b>.</p>
+      <p><em class="beat">4 · Observe —</em> <b>Observe</b>: our code — normal, boring code — runs that tool and pastes
+         the result back into the conversation: a street address. Now the model knows something it didn't know ten seconds ago.</p>
+      <p><em class="beat">5 · around again —</em> Goal not met yet? Around again — but smarter. Address done — now it can go
+         find trains from Berlin that arrive before nine, and everything it observed rides along in its context.</p>
+      <p><em class="beat">6 · Done —</em> Nothing left to do? It answers. <em>(pause)</em> That's the whole trick. A text predictor,
+         run in a loop, with code that acts on its requests. Keep this exact example in mind — in three slides
+         you'll watch it happen for real.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      <p>This is standard <b>function calling</b> (also called tool calling), and every major provider — OpenAI, Anthropic, Google —
+         works exactly this way: the model outputs a structured request like
+         <span class="k">find_journeys({from: "Berlin", to: "Hamburg"})</span>, your application executes the real function,
+         and feeds the result back. The model itself never executes anything.</p>
+      <p>Each tool result is the agent's “ground truth” — the moment it stops guessing about the world and gets real data.
+         That's why agents beat pure chat on multi-step jobs: they check reality between steps.</p></div>
+  </section>
+
+  <!-- ================= S5 ================= -->
+  <section id="s5">
+    <div class="slidehead"><span class="snum">SLIDE 5</span><h2>Tools</h2><span class="stime"><b>1:15</b> · clock 6:00</span></div>
+    <div class="do"><span class="blabel">Do</span>
+      This slide steps like the loop slide: press <span class="k">→</span> twice
+      (what counts as a tool → the four demo tools). The middle visual swaps,
+      the caption at the bottom changes with you. One beat per press.</div>
+    <div class="say"><span class="blabel">Say — one beat per arrow press</span>
+      <p><em class="beat">0 · definition —</em> That orange <b>Act</b> card was a request — a request to use a <b>tool</b>.
+         Here's the definition, and it's the whole slide: a tool is a capability someone built —
+         handed to the model <b>described in plain words</b>. The model never runs it; it asks, our code executes.</p>
+      <p><em class="beat">1 · what counts —</em> So what can be a tool? <b>Anything code can do.</b>
+         In the demo, <em>get_site</em> is twenty lines of <b>our own code</b>. But it could just as well be an
+         <b>external API</b> — Deutsche Bahn's timetable, Google Maps. A <b>database</b> lookup — a project,
+         a schedule, a customer. Or a <b>real-world action</b> — send an email, create a ticket, edit a file.
+         If code can do it, an agent can be handed it.</p>
+      <p><em class="beat">2 · the four tools —</em> And these are, word for word, the four descriptions the model reads
+         in the demo. That's the complete interface — no code, just these sentences. Two things to notice.
+         The wording: “returns <b>all</b> options — check prices <b>yourself</b>.” Our tools do no thinking; they fetch;
+         all judgement stays with the model. And the green lines: in the demo each of these is a little function I wrote —
+         in real life the same slot would be the <b>Bahn timetable API</b>, <b>Booking.com</b>, your <b>project database</b>.
+         Swap the code behind a description, and the agent doesn't change.</p>
+      <p><em class="beat">transition —</em> So the tools decide what it <b>can</b> do. One question left before
+         the demo: of the things it <em>can</em> do, how much do we let it decide <b>without us</b>?
+         Different products answer that differently — and you already use most of them. That's the ladder.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      Writing these descriptions well is a real engineering discipline — vague or overlapping descriptions make agents
+      pick the wrong tool. If a developer asks “where do the descriptions go?”: they're sent with every API call,
+      as JSON schemas with a name, description, and typed parameters. The model chooses among them by reading them —
+      exactly like a new colleague reading a manual.</div>
+  </section>
+
+  <!-- ================= S6 ================= -->
+  <section id="s6">
+    <div class="slidehead"><span class="snum">SLIDE 6</span><h2>The autonomy ladder</h2><span class="stime"><b>0:45</b> · clock 6:45</span></div>
+    <div class="do"><span class="blabel">Do</span> Steps: press <span class="k">→</span> to light rungs 1–4, one line each.</div>
+    <div class="say"><span class="blabel">Say — one beat per rung</span>
+      <p><em class="beat">1 —</em> Here's that ladder — four rungs, and the badges on the right are things you already use.
+         Bottom: <b>autocomplete</b> — your phone keyboard finishing a word. Zero autonomy.</p>
+      <p><em class="beat">2 —</em> <b>Chat</b> — a plain question-and-answer bot. It answers when asked; between answers,
+         you do everything. ChatGPT <em>started</em> here — these days it climbs higher on this ladder,
+         which is exactly why the ladder matters.</p>
+      <p><em class="beat">3 —</em> <b>Fixed workflow</b> — a Zapier automation. The same steps in the same order every time,
+         a pipeline with a model inside. Powerful, predictable — but someone decided the steps in advance.</p>
+      <p><em class="beat">4 —</em> <b>Agent</b> — Claude Code, and the demo we're about to run. Nobody scripted the steps.
+         It picks its own next move, checks the result, picks again — until the goal is met. Let's watch one do it.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      Rung 3 vs 4 is the distinction practitioners actually argue about, and the accepted line
+      (again from Anthropic's “Building Effective Agents”) is: <b>workflows</b> orchestrate models through
+      <em>predefined code paths</em>; <b>agents</b> <em>dynamically direct their own process and tool use</em>.
+      Their advice, worth quoting in Q&amp;A: use the simplest thing that works — a workflow when steps are known,
+      an agent only when you can't predict the path.</div>
+  </section>
+
+  <!-- ================= S7 ================= -->
+  <section id="s7">
+    <div class="slidehead"><span class="snum">SLIDE 7</span><h2>Demo hand-off</h2><span class="stime"><b>0:30</b> · clock 7:15</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Here's the goal I'll hand it — word for word: <em>(read the card aloud, slowly)</em>
+         “Jonas needs to travel from Berlin to the Hamburg-Altona construction site on Thursday, arriving by 9:00,
+         and stay one night. Train budget 80 euros, hotel budget 120 a night, hotel within 2 kilometres of the site.
+         Send him the itinerary.”</p>
+      <p>Four constraints, buried in one sentence. Two things to watch for:
+         the <b>loop repeating</b> — and options being <b>ruled out by those constraints</b>. Let's go.</p>
+    </div>
+    <div class="do"><span class="blabel">Do</span> Switch to the demo tab. Take a breath — don't click Start until you're ready to narrate.</div>
+  </section>
+
+  <hr class="cut">
+
+  <!-- ================= DEMO ================= -->
+  <section id="demo">
+    <div class="slidehead"><span class="snum">LIVE DEMO</span><h2>Cycle-by-cycle narration</h2><span class="stime"><b>3:45</b> · clock 11:00</span></div>
+
+    <div class="do"><span class="blabel">How the controls work</span>
+      Press <b>Start</b>. The model runs ahead in the background while cards queue up —
+      <b>nothing appears until you press Next ▸</b> (or <span class="k">→ / Space</span>).
+      The Next button floats at the <b>bottom centre</b> of the screen, right where new cards appear —
+      no scrolling to reach it. It shows a count when steps are queued, and “thinking…” while the model
+      genuinely is. One press = one card: reveal, talk, reveal the next.</div>
+
+    <div class="warn"><span class="blabel">If anything breaks</span>
+      A red error card, a hang, anything weird: smile, say <em>“live demos — good thing agents come with a flight recorder”</em>,
+      click <b>Load run</b>, pick <span class="k">good-run.json</span>. Stepping and cards are identical; the narration below
+      still fits exactly. This is a feature of the talk, not an apology.</div>
+
+    <div class="note"><span class="blabel">If the live run differs from the script below</span>
+      It can — same goal, slightly different phrasing or order. Doesn't matter. Your technique:
+      <b>read each Think card aloud</b> (they're written by the model to explain itself) and point at what it rules out.
+      The beats — site → trains → hotels → send — have held across every test run.</div>
+
+    <div class="say"><span class="blabel">Cycle 1 · get_site — say while revealing Think, Act, Observe</span>
+      <p><em class="beat">Think card —</em> First card: the model's own reasoning, live. Read it — it wants the site's exact address
+         before it looks at hotels. Nobody told it to start there. That was its call.</p>
+      <p><em class="beat">Act card —</em> The orange card is the request — look how small it is:
+         <b>get_site, name: Hamburg-Altona</b>. That's all a model can do. Ask.</p>
+      <p><em class="beat">Observe card —</em> And the green card is our code answering: the address on Harkortstraße,
+         and the site manager, Petra. That's now in the model's memory — knowledge it didn't have ten seconds ago.</p>
+    </div>
+
+    <div class="say"><span class="blabel">Cycle 2 · find_journeys</span>
+      <p><em class="beat">Think —</em> Around the loop again — and notice it <b>used</b> what it learned: it has the address, so now trains.</p>
+      <p><em class="beat">Act / Observe —</em> It asks for Berlin-to-Hamburg trains… and gets back <b>seven</b>.
+         Here's the important bit: my code did <b>zero</b> filtering. Every train is in that table —
+         expensive ones, late ones, all of them. The tool fetches; it doesn't think.</p>
+    </div>
+
+    <div class="say"><span class="blabel">Cycle 3 · the money moment — slow down here</span>
+      <p><em class="beat">Think —</em> <b>This card is the whole talk.</b> Read it out loud, slowly:
+         only <b>ICE 1601</b> — 6:55 to 8:45, 69 euros — fits both limits. The cheap trains arrive after nine.
+         The early-enough trains cost more than eighty. Seven options, six ruled out, in plain language you can audit.
+         A text predictor just did constraint-checking — because the numbers were in its context.</p>
+      <p><em class="beat">Act / Observe —</em> Then hotels near the address from step one — eight come back, again unfiltered.
+         The closest one, 800 metres away? A hundred and thirty a night — over budget. Watch what it does with that.</p>
+    </div>
+
+    <div class="say"><span class="blabel">Cycle 4 · send_itinerary + Done</span>
+      <p><em class="beat">Think —</em> It picks Hotel Altona Park — 95 euros, 1.2 kilometres, both limits met —
+         and rules out the closer one for the price. Then, last part of the goal: send it.</p>
+      <p><em class="beat">Act / Observe —</em> It <b>writes</b> the full itinerary itself — train, times, address,
+         Petra's name — and our code “sends” it. Green check: delivered.</p>
+      <p><em class="beat">Done card —</em> And it stops. Goal met, nothing left to do — remember the top arrow on the loop diagram.</p>
+      <p>Count what just happened: <b>four tool calls, six trains and seven hotels rejected, zero lines of decision-making code in my program</b>.
+         Every decision happened in a blue Think card, in words. My code fetched data and delivered a message. That's an agent.</p>
+    </div>
+
+    <div class="do"><span class="blabel">Do</span> Leave the finished run on screen a beat, then switch back to the slides tab → the formula slide (slide 8).</div>
+  </section>
+
+  <hr class="cut">
+
+  <!-- ================= FORMULA ================= -->
+  <section id="formula">
+    <div class="slidehead"><span class="snum">SLIDE 8</span><h2>The formula</h2><span class="stime"><b>0:45</b> · clock 11:45</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Back to the slides — let's name what you just watched.</p>
+      <p><em>(walk the top row)</em> An <b>LLM</b> — a text predictor. Plus <b>tools</b> — the four capabilities we
+         handed it. Plus <b>context</b> — its memory: every request and every result stayed in the conversation,
+         which is why cycle three could compare all seven trains. Plus the <b>loop</b> — decide, act, check, repeat
+         until done. Plus <b>actions</b> — our code actually executing things. Add those up, and you have an <b>AI agent</b>.</p>
+      <p><em>(bottom row)</em> And this answers where we started. An <b>LLM</b> predicts words. <b>Claude</b> — or GPT —
+         is an LLM trained into a helpful brain you can talk to. And <b>Claude Code is Claude, plus tools, plus this
+         exact loop</b>, running on your computer. <em>(pause, point at the last line)</em>
+         That is how a text predictor ends up doing things. Slide two's mystery: solved.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      This slide is deliberately 100% recap — every word on it has already been seen once. That's what makes it land.
+      If you're behind on time, read just the equation and the final line; it still works in fifteen seconds.</div>
+  </section>
+
+  <hr class="cut">
+
+  <!-- ================= S8 ================= -->
+  <section id="s8">
+    <div class="slidehead"><span class="snum">SLIDE 9</span><h2>Where it goes wrong</h2><span class="stime"><b>1:15</b> · clock 13:00</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Before anyone gets too excited — I showed you the run that works. Let me be honest about how this fails,
+         because it fails in three characteristic ways.</p>
+      <p>It can <b>loop forever</b> — keep trying, never finish. And every trip around the loop is a paid model call, so that's real money and real time.</p>
+      <p>It can pick the <b>wrong tool</b>, with wrong arguments — confidently. It won't look unsure. It never looks unsure.</p>
+      <p>And the sneakiest: a <b>bad assumption</b>. It fills a gap with a guess, the guess lands in its context,
+         and every later step builds on it. In our first test run, the goal didn't say where Jonas was starting from —
+         so a lesser run might just guess a city. We fixed the goal, not the model.</p>
+      <p>So real agents ship with guardrails: <b>cap the loops</b> — ours stops after ten, no matter what.
+         <b>Limit the tools</b> — it can send an itinerary; it cannot spend money. And for anything hard to undo,
+         <b>a human approves first</b>. When Claude Code asks “may I edit this file?” — that's not the AI being polite.
+         That's the guardrail. That's a human in the loop.</p>
+    </div>
+    <div class="note"><span class="blabel">Background for you</span>
+      All three failure modes and all three guardrails are the standard ones in production-agent literature:
+      bounded execution (step caps, budgets, timeouts), a minimal tool set, and human-in-the-loop checkpoints for
+      high-stakes actions. The Jonas story is true — in our first live test the model <em>asked</em> which city
+      Jonas was departing from instead of guessing. Honest detail if it comes up: the better failure is asking, and that's what it did.</div>
+  </section>
+
+  <!-- ================= S9 ================= -->
+  <section id="s9">
+    <div class="slidehead"><span class="snum">SLIDE 10</span><h2>The questions now</h2><span class="stime"><b>1:00</b> · clock 14:00</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>So here's what this changes. The question about AI used to be: <b>what can the model say?</b>
+         Is it smart? Does it hallucinate?</p>
+      <p>With agents, the questions become engineering questions — four of them, and you've met every one today.</p>
+      <p><b>Tools</b> — what do we hand it? Every tool is a permission. The demo ran on four small ones;
+         imagine tools that speak our world — “look up a project's schedule”, “draft a delay notification”.
+         That's a thought, not a roadmap — but that's where the conversation starts.</p>
+      <p><b>Autonomy</b> — what may it do alone, and where must a human approve? That's the ladder,
+         applied to every job we'd give one.</p>
+      <p><b>Failure</b> — what happens when it fails? Because it will: cap the loops, plan the fallback,
+         make actions undoable. That's the previous slide as a checklist.</p>
+      <p><b>Trust</b> — how do we check its work? Remember the blue Think cards — readable on purpose.
+         An agent whose reasoning you can read is an agent you can audit.</p>
+      <p>None of these are solved problems. That's the honest state of this technology —
+         and it's why it's worth understanding now.</p>
+    </div>
+    <div class="note"><span class="blabel">Careful here</span>
+      Keep the Koppla examples clearly hypothetical — “imagine”, “a thought, not a roadmap” — unless you actually
+      want to start that product conversation in the room. The slide's question is the takeaway, not any feature.</div>
+  </section>
+
+  <!-- ================= S10 ================= -->
+  <section id="s10">
+    <div class="slidehead"><span class="snum">SLIDE 11</span><h2>Close + questions</h2><span class="stime"><b>1:00</b> · clock 15:00</span></div>
+    <div class="say"><span class="blabel">Say</span>
+      <p>Three things to walk away with.</p>
+      <p>One — an agent is not a new kind of AI. It's a language model, plus <b>tools</b>, running in a <b>loop</b>: think, act, observe, repeat.</p>
+      <p>Two — the model only ever writes text. Every real action — every file edited, every message sent —
+         is ordinary code, written by people, acting on the model's requests. The power <b>and the responsibility</b> live in the tools we hand it.</p>
+      <p>Three — autonomy is a dial, not a switch. The craft is choosing the rung — and putting a human in the loop
+         everywhere a mistake would hurt.</p>
+      <p>The demo and the slides are in the repo if you want to poke at them. Questions?</p>
+    </div>
+  </section>
+
+  <!-- ================= QA ================= -->
+  <section id="qa">
+    <div class="slidehead"><h2>Q&amp;A prep — likely questions</h2><span class="stime">have these loaded</span></div>
+    <dl class="qa">
+      <dt>“Is ChatGPT an agent?”</dt>
+      <dd><span class="short">“Mostly rung two — chat. But when it browses the web or runs deep research for you, it's climbing to rung four for that task: same loop we just watched, different tools.”</span></dd>
+
+      <dt>“What model / software was that? Did you use a framework?”</dt>
+      <dd><span class="short">“An OpenAI reasoning model, called directly over their API. The whole loop is about twenty-five lines of code I can show you — no framework, no library. That's the point: the mechanism is small.”</span></dd>
+
+      <dt>“Could it book the train for real?”</dt>
+      <dd><span class="short">“Same mechanism exactly — you'd swap my fake train tool for a real booking API. And that's precisely the moment you add the guardrail from slide 9: a human approves before money moves.”</span></dd>
+
+      <dt>“How is this different from Zapier / our existing automations?”</dt>
+      <dd><span class="short">“Those are rung three — someone decided the steps in advance, and they run the same way every time. Great when the path is known! The agent chose its own path. Rule of thumb from the people who build these: use the simplest rung that works; agents only when you can't script the steps.”</span></dd>
+
+      <dt>“What about hallucinations?”</dt>
+      <dd><span class="short">“That's actually where agents help: every Observe step pastes real data into the conversation, so it reasons over facts our tools returned, not memories. It can still make bad judgement calls — which is why the Think cards being readable matters. You can audit every decision.”</span></dd>
+
+      <dt>“Isn't this expensive / slow?”</dt>
+      <dd><span class="short">“Each trip around the loop is one model call — this run was five, a few cents. The failure that costs money is the infinite loop, which is why every serious agent has a hard cap. Ours stops at ten.”</span></dd>
+
+      <dt>“Can it use tools it wasn't given?”</dt>
+      <dd><span class="short">“No — and that's a feature. The tool list is the permission list. It can only ask for what we described to it; our code only executes what's on the list.”</span></dd>
+
+      <dt>“How does the model actually know which tool to pick?”</dt>
+      <dd><span class="short">“Two things. First, it reads the descriptions — they sit in its context on every call, which is why writing them in plain words matters so much. Second, it was trained for this: model makers fine-tune on millions of examples of picking tools and filling in arguments, so it's a learned skill, like everything else it does. And deep down it's still next-word prediction — the ‘next words’ just happen to be a tool call.”</span></dd>
+
+      <dt>“Are the blue Think cards really how it thinks?”</dt>
+      <dd><span class="short">“Honest answer: not the whole picture. Reasoning models do a longer, hidden scratch-work pass we never see; the blue cards are what the model writes to explain itself — its own commentary, not a brain scan. Still genuinely useful: it's what the model committed to in writing, and that's what makes its decisions auditable.”</span></dd>
+
+      <dt>“What's a reasoning model vs a normal one?”</dt>
+      <dd><span class="short">“A normal model starts answering immediately. A reasoning model is additionally trained to first ‘think’ for a while — hidden scratch work, sometimes thousands of words of it — before answering. That makes it better at multi-step planning with constraints, like our four-constraints trip, but slower and pricier per call. The demo uses a reasoning model on its lowest thinking setting. Rule of thumb: quick lookup or rewrite — normal model; plan under constraints — reasoning model.”</span></dd>
+
+      <dt>“When was all this invented? It feels sudden.”</dt>
+      <dd><span class="short">“Faster than it feels, actually. The idea — let the model reason, then act with tools — comes from research in late 2022, a paper called ReAct. Early 2023, Toolformer showed models could learn tool use. June 2023, OpenAI made function calling an official API feature — that's the moment this became a product thing, not a paper. Late 2024 brought a shared standard for plugging tools in, and by now it's how every major AI product works. About three years, paper to everywhere.”</span></dd>
+
+      <dt>“Will it remember Jonas next time? Does it learn from this run?”</dt>
+      <dd><span class="short">“No. Each run starts completely blank — its only memory is the context window we watched filling up, and that's gone when the run ends. Products that seem to remember you do it by saving notes and pasting them back into the context next time. Which is session one again: everything the model knows in the moment is in its context.”</span></dd>
+
+      <dt>“Would it do exactly the same thing if you ran it again?”</dt>
+      <dd><span class="short">“Not word for word — it's probabilistic, so phrasing and sometimes the order of steps vary run to run. The constraints keep the outcome consistent: every good run ends with the same train and hotel, because only one combination fits. That variability is real, though — it's why serious teams test agents the way they test software.”</span></dd>
+
+      <dt>“What's MCP? I keep hearing that term.”</dt>
+      <dd><span class="short">“A standard plug for tools — think USB for agents. Instead of every app describing tools its own way, MCP is one shared protocol a tool exposes once and any agent can use. It came out of Anthropic in late 2024 and got adopted across the industry. Same concept as our four descriptions — just standardized.”</span></dd>
+    </dl>
+  </section>
+
+  <div class="sources">
+    <b>Claims in this script were checked against:</b>
+    <ul>
+      <li>Anthropic — <a href="https://www.anthropic.com/research/building-effective-agents">Building Effective Agents</a> (agent definition; workflow vs agent; “simplest thing that works”; ground truth from tool results)</li>
+      <li>Martin Fowler — <a href="https://martinfowler.com/articles/function-call-LLM.html">Function calling using LLMs</a> (model emits structured request; application executes and returns result)</li>
+      <li>Openlayer — <a href="https://www.openlayer.com/blog/ai-agent-failure-modes-tool-calling-loops-propagation">AI agent failure modes</a>; Arthur — <a href="https://www.arthur.ai/blog/best-practices-for-building-agents-guardrails">Agent guardrails best practices</a> (loops, wrong tool calls, error propagation; step caps and human-in-the-loop)</li>
+      <li>Q&amp;A claims: tool selection as trained behavior — <a href="https://rlhfbook.com/c/13-tools">RLHF Book, ch. 13 (Tool Use)</a>;
+          reasoning models' hidden chain-of-thought — <a href="https://simonwillison.net/2024/Sep/12/openai-o1/">Simon Willison on OpenAI o1</a>;
+          tool-use timeline (ReAct Oct 2022 · Toolformer Feb 2023 · OpenAI function calling 13 Jun 2023 · MCP late 2024) —
+          <a href="https://www.taskade.com/blog/tool-use-history">A History of Tool Use</a>.</li>
+      <li>The demo narration follows the committed recording <span class="k">demo/runs/good-run.json</span> exactly.</li>
+    </ul>
+  </div>
+</div>
