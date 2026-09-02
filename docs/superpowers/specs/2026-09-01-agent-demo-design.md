@@ -289,6 +289,16 @@ Run after Part A is done, output in `slides/`. Paste this brief:
 >    say" to "what tools do we give it, and what do we let it do alone."
 > 10. Questions.
 
+**Revisions (2026-09-02, after user feedback):** slide 2 gained a
+next-word-prediction graphic (example sentence + candidate probability bars);
+slide 3 gained mini arrow-diagrams inside both cards and an on-slide Anthropic
+definition quote ("agents are models using tools in a loop"); slide 4's step
+captions each carry a concrete example line from the demo's first cycle;
+slide 5 gained a model → your code → context round-trip strip; and a new
+formula slide sits after the demo hand-off ("LLM + tools + context + loop +
+actions = AI agent", with the LLM → Claude → Claude Code lineage). The deck is
+now 11 slides.
+
 ## 10. Acceptance
 
 1. Open `demo/index.html` from disk, enter a key, Start: 4 Think → Act →

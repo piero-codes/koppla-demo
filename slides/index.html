@@ -241,24 +241,50 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
 /* ===========================================
    SLIDE 2 — RECAP
    =========================================== */
-#s2 .eyebrow { position: absolute; left: 120px; top: 120px; }
-#s2 .recaps { position: absolute; left: 120px; right: 120px; top: 196px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+#s2 .eyebrow { position: absolute; left: 120px; top: 104px; }
+#s2 .recaps { position: absolute; left: 120px; right: 120px; top: 168px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+#s2 .recaps .card { padding: 30px 40px; }
 #s2 .card .tag { color: var(--blue); }
-#s2 .card p { font-size: 34px; font-weight: 500; line-height: 1.4; }
-#s2 .question { position: absolute; left: 120px; right: 120px; top: 560px; }
+#s2 .card p { font-size: 29px; font-weight: 500; line-height: 1.4; }
+#s2 .predictor { position: absolute; left: 120px; right: 120px; top: 436px; background: var(--card);
+                 border: 2.5px solid var(--blue-line); border-radius: 10px; padding: 34px 48px;
+                 display: grid; grid-template-columns: 1fr 640px; gap: 48px; align-items: center; }
+#s2 .ptx { font: 600 38px var(--font-mono); color: var(--ink); line-height: 1.45; }
+#s2 .ptx .blank { color: var(--blue); animation: s2blink 1.1s steps(1) infinite; }
+@keyframes s2blink { 50% { opacity: .2; } }
+#s2 .pbars { display: flex; flex-direction: column; gap: 13px; }
+#s2 .pbar { display: grid; grid-template-columns: 205px 1fr 80px; align-items: center; gap: 16px;
+            font: 600 23px var(--font-mono); color: var(--ink); }
+#s2 .pbar i { display: block; height: 23px; border-radius: 5px; background: var(--blue); width: var(--w); }
+#s2 .pbar:nth-child(2) i { opacity: .45; } #s2 .pbar:nth-child(3) i { opacity: .25; } #s2 .pbar:nth-child(4) i { opacity: .15; }
+#s2 .pbar b { color: var(--muted); text-align: right; font-weight: 600; }
+#s2 .pnote { position: absolute; left: 120px; top: 706px; font: 600 24px var(--font-mono); color: var(--green); }
+#s2 .question { position: absolute; left: 120px; right: 120px; top: 792px; }
+#s2 .question.statement { font-size: 64px; }
 
 /* ===========================================
    SLIDE 3 — CHATBOT VS AGENT
    =========================================== */
-#s3 .eyebrow { position: absolute; left: 120px; top: 120px; }
-#s3 .vs { position: absolute; left: 120px; right: 120px; top: 200px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
-#s3 .vs .card { min-height: 330px; }
+#s3 .eyebrow { position: absolute; left: 120px; top: 104px; }
+#s3 .vs { position: absolute; left: 120px; right: 120px; top: 176px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+#s3 .vs .card { min-height: 360px; padding: 34px 44px; }
 #s3 .vs .card.chatbot { border-color: var(--blue-line); background: var(--blue-bg); }
 #s3 .vs .card.agent { border-color: var(--orange-line); background: var(--orange-bg); }
-#s3 .vs h3 { font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 52px; margin-bottom: 20px; }
+#s3 .vs h3 { font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 48px; margin-bottom: 14px; }
 #s3 .vs .chatbot h3 { color: var(--blue); } #s3 .vs .agent h3 { color: var(--orange); }
-#s3 .vs p { font-size: 34px; font-weight: 500; line-height: 1.4; }
-#s3 .statement { position: absolute; left: 120px; top: 660px; }
+#s3 .vs p { font-size: 29px; font-weight: 500; line-height: 1.4; }
+#s3 .mini { display: flex; align-items: center; gap: 13px; margin-top: 26px; flex-wrap: wrap; row-gap: 16px; }
+#s3 .mn { border: 2.5px solid var(--muted); border-radius: 8px; padding: 7px 18px;
+          font-stretch: 112%; font-weight: 800; font-size: 25px; text-transform: uppercase;
+          color: var(--ink); background: var(--card); }
+#s3 .chatbot .mn.hot { border-color: var(--blue); color: var(--blue); }
+#s3 .agent .mn.hot { border-color: var(--orange); color: var(--orange); }
+#s3 .ma { font: 600 20px var(--font-mono); color: var(--muted); }
+#s3 .statement { position: absolute; left: 120px; top: 622px; font-size: 78px; }
+#s3 .defquote { position: absolute; left: 120px; right: 120px; top: 764px; border-left: 6px solid var(--blue);
+                background: var(--blue-bg); border-radius: 0 10px 10px 0; padding: 28px 44px; }
+#s3 .defquote .q { font-family: var(--font-display); font-stretch: 112%; font-weight: 700; font-size: 44px; color: var(--ink); }
+#s3 .defquote .a { font: 600 21px var(--font-mono); letter-spacing: .14em; color: var(--blue); margin-top: 12px; }
 
 /* ===========================================
    SLIDE 4 — THE LOOP (interactive, 7 inner steps)
@@ -289,23 +315,32 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
 #s4 svg text { font: 600 22px var(--font-mono); fill: var(--muted); opacity: 0; transition: opacity .35s; }
 #s4 svg [data-on].lit text { opacity: 1; }
 #s4 svg .p-loop text { fill: var(--green); } #s4 svg .p-done text { fill: var(--blue); }
-#s4 .cap { position: absolute; left: 120px; right: 120px; top: 852px; font: 600 30px var(--font-mono);
+#s4 .cap { position: absolute; left: 120px; right: 120px; top: 838px; font: 600 30px var(--font-mono);
            color: var(--ink); display: none; }
+#s4 .cap .ex { display: block; margin-top: 12px; font: 600 25px var(--font-mono); color: var(--muted); }
 #s4 .stephint { position: absolute; right: 120px; top: 130px; font: 400 21px var(--font-mono); color: var(--muted); }
 
 /* ===========================================
    SLIDE 5 — WHAT IS A TOOL
    =========================================== */
-#s5 .eyebrow { position: absolute; left: 120px; top: 104px; }
-#s5 .head { position: absolute; left: 120px; right: 120px; top: 158px; font-stretch: 112%; font-weight: 800;
-            text-transform: uppercase; font-size: 62px; line-height: 1.05; }
-#s5 .sub { position: absolute; left: 120px; right: 120px; top: 310px; font-size: 33px; font-weight: 500; color: var(--muted); }
-#s5 .tools { position: absolute; left: 120px; right: 120px; top: 402px; display: grid;
-             grid-template-columns: 1fr 1fr; gap: 24px; }
-#s5 .tool { background: var(--card); border: 2px solid var(--grid); border-radius: 10px; padding: 26px 34px; }
-#s5 .tool .name { font: 600 30px var(--font-mono); color: var(--orange); margin-bottom: 10px; }
-#s5 .tool .desc { font-size: 26px; font-weight: 500; line-height: 1.35; color: var(--ink); }
-#s5 .foot { position: absolute; left: 120px; top: 928px; font: 600 24px var(--font-mono); color: var(--green); }
+#s5 .eyebrow { position: absolute; left: 120px; top: 96px; }
+#s5 .head { position: absolute; left: 120px; right: 120px; top: 148px; font-stretch: 112%; font-weight: 800;
+            text-transform: uppercase; font-size: 56px; line-height: 1.05; }
+#s5 .roundtrip { position: absolute; left: 120px; right: 120px; top: 296px; display: flex; align-items: center; gap: 22px; }
+#s5 .rt-box { border: 2.5px solid; border-radius: 10px; padding: 18px 30px; background: var(--card); flex: 1; }
+#s5 .rt-box .t { display: block; font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 30px; }
+#s5 .rt-box .d { display: block; font: 600 19px var(--font-mono); color: var(--muted); margin-top: 6px; }
+#s5 .rt-box.b { border-color: var(--blue); } #s5 .rt-box.b .t { color: var(--blue); }
+#s5 .rt-box.o { border-color: var(--orange); } #s5 .rt-box.o .t { color: var(--orange); }
+#s5 .rt-box.g { border-color: var(--green); } #s5 .rt-box.g .t { color: var(--green); }
+#s5 .rt-arr { font: 600 22px var(--font-mono); white-space: nowrap; }
+#s5 .rt-arr.o { color: var(--orange); } #s5 .rt-arr.g { color: var(--green); }
+#s5 .tools { position: absolute; left: 120px; right: 120px; top: 452px; display: grid;
+             grid-template-columns: 1fr 1fr; gap: 22px; }
+#s5 .tool { background: var(--card); border: 2px solid var(--grid); border-radius: 10px; padding: 22px 32px; }
+#s5 .tool .name { font: 600 28px var(--font-mono); color: var(--orange); margin-bottom: 8px; }
+#s5 .tool .desc { font-size: 24px; font-weight: 500; line-height: 1.35; color: var(--ink); }
+#s5 .foot { position: absolute; left: 120px; top: 872px; font: 600 24px var(--font-mono); color: var(--green); }
 
 /* ===========================================
    SLIDE 6 — AUTONOMY LADDER (interactive, 5 inner steps)
@@ -343,6 +378,33 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
 #s7 .watch { position: absolute; left: 120px; top: 700px; display: flex; gap: 24px; align-items: center; }
 #s7 .watch .lbl { font: 600 24px var(--font-mono); color: var(--muted); letter-spacing: .12em; }
 #s7 .switchnote { position: absolute; left: 120px; top: 828px; font: 600 26px var(--font-mono); color: var(--orange); }
+
+/* ===========================================
+   SLIDE 7B — THE FORMULA (recap after the demo)
+   =========================================== */
+#s7b .eyebrow { position: absolute; left: 120px; top: 110px; color: var(--green); }
+#s7b .equation { position: absolute; left: 120px; right: 120px; top: 214px; display: flex; align-items: center;
+                 flex-wrap: wrap; gap: 16px; row-gap: 24px; }
+#s7b .eq-plus { font: 600 42px var(--font-mono); color: var(--muted); }
+#s7b .eq-chip { border: 2.5px solid; border-radius: 8px; padding: 13px 24px; background: var(--card); text-align: center; }
+#s7b .eq-chip .t { display: block; font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 34px; }
+#s7b .eq-chip .s { display: block; font: 600 16px var(--font-mono); color: var(--muted); margin-top: 4px; }
+#s7b .eq-chip.ink { border-color: var(--ink); } #s7b .eq-chip.ink .t { color: var(--ink); }
+#s7b .eq-chip.o { border-color: var(--orange); background: var(--orange-bg); } #s7b .eq-chip.o .t { color: var(--orange); }
+#s7b .eq-chip.bl { border-color: var(--blue); background: var(--blue-bg); } #s7b .eq-chip.bl .t { color: var(--blue); }
+#s7b .eq-chip.g { border-color: var(--green); background: var(--green-bg); } #s7b .eq-chip.g .t { color: var(--green); }
+#s7b .eq-chip.res { border-color: var(--blue); background: var(--blue); }
+#s7b .eq-chip.res .t { color: #fff; } #s7b .eq-chip.res .s { color: rgba(255,255,255,.8); }
+#s7b .lineage { position: absolute; left: 120px; right: 120px; top: 500px; display: flex; align-items: stretch; gap: 20px; }
+#s7b .lin { flex: 1; background: var(--card); border: 2.5px solid var(--grid); border-radius: 10px; padding: 28px 34px; }
+#s7b .lin .tag { display: block; font: 600 20px var(--font-mono); letter-spacing: .16em; color: var(--muted); margin-bottom: 10px; }
+#s7b .lin h3 { font-stretch: 112%; font-weight: 800; text-transform: uppercase; font-size: 40px; margin-bottom: 10px; color: var(--ink); }
+#s7b .lin p { font-size: 25px; font-weight: 500; line-height: 1.35; }
+#s7b .lin.agent { border-color: var(--orange); background: var(--orange-bg); }
+#s7b .lin.agent h3 { color: var(--orange); }
+#s7b .lin-arr { align-self: center; font: 600 36px var(--font-mono); color: var(--muted); }
+#s7b .payoff { position: absolute; left: 120px; right: 120px; top: 812px; }
+#s7b .payoff.statement { font-size: 60px; }
 
 /* ===========================================
    SLIDE 8 — WHERE IT GOES WRONG
@@ -425,8 +487,18 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
           <p class="ed">And yet — it edits files and runs commands on a real computer.</p>
         </div>
       </div>
-      <div class="question statement reveal d4 ed">How does a <span class="hl-blue">text predictor</span> end up <span class="hl-orange">doing things?</span></div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 02 / 10</span></div>
+      <div class="predictor reveal d3" aria-hidden="true">
+        <div class="ptx"><span class="ed">The concrete pour is scheduled for</span> <span class="blank">▁▁▁▁▁▁</span></div>
+        <div class="pbars">
+          <div class="pbar" style="--w:61%"><span class="ed">Monday</span><i></i><b>61%</b></div>
+          <div class="pbar" style="--w:23%"><span class="ed">Tuesday</span><i></i><b>23%</b></div>
+          <div class="pbar" style="--w:9%"><span class="ed">next week</span><i></i><b>9%</b></div>
+          <div class="pbar" style="--w:7%"><span class="ed">…anything</span><i></i><b>7%</b></div>
+        </div>
+      </div>
+      <div class="pnote reveal d4 ed">that's the entire machine — pick the likeliest next word, then repeat</div>
+      <div class="question statement reveal d5 ed">How does a <span class="hl-blue">text predictor</span> end up <span class="hl-orange">doing things?</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 02 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 3 · CHATBOT VS AGENT ============ -->
@@ -437,14 +509,24 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <div class="card chatbot reveal d1">
           <h3 class="ed">Chatbot</h3>
           <p class="ed">A consultant you call.<br>You ask, it answers —<br>then <b>you</b> do the work.</p>
+          <div class="mini" aria-hidden="true">
+            <span class="mn">You</span><span class="ma">— ask →</span><span class="mn hot">Model</span><span class="ma">— answer →</span><span class="mn">You</span><span class="ma">🔨 you do the work</span>
+          </div>
         </div>
         <div class="card agent reveal d2">
           <h3 class="ed">Agent</h3>
           <p class="ed">An assistant you brief.<br>You hand it a goal —<br><b>it</b> works until the job is done.</p>
+          <div class="mini" aria-hidden="true">
+            <span class="mn">You</span><span class="ma">— goal →</span><span class="mn hot">Model</span><span class="ma">⇄</span><span class="mn hot">Tools</span><span class="ma">↺ …until</span><span class="mn">Done ✓</span>
+          </div>
         </div>
       </div>
       <div class="statement reveal d4 ed">A chatbot <span class="hl-blue">answers</span>. An agent <span class="hl-orange">acts</span>.</div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 03 / 10</span></div>
+      <div class="defquote reveal d5">
+        <div class="q ed">“Agents are models using tools <span class="hl-blue">in a loop</span>.”</div>
+        <div class="a ed">ANTHROPIC · “BUILDING EFFECTIVE AGENTS”</div>
+      </div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 03 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 4 · THE LOOP (interactive) ============ -->
@@ -474,13 +556,13 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <div class="node n-done"  data-on="6" style="left:1234px; top:118px; transform: translateY(-100%);">Done</div>
       </div>
       <div class="cap" data-on="0">One shape. Everything an agent does is this loop.</div>
-      <div class="cap" data-on="1">It starts with a goal in plain words — no script, no flowchart.</div>
-      <div class="cap" data-on="2"><span class="hl-blue">Think</span> — the model reads everything so far and decides what should happen next.</div>
-      <div class="cap" data-on="3"><span class="hl-orange">Act</span> — it writes a request to use a tool. Text. That is all a model can produce.</div>
-      <div class="cap" data-on="4"><span class="hl-green">Observe</span> — your code runs the tool and pastes the result back into the conversation.</div>
-      <div class="cap" data-on="5">Constraint not met? Something missing? <span class="hl-green">Around again</span> — with everything it just learned.</div>
-      <div class="cap" data-on="6">Nothing left to do → it answers. <span class="hl-blue">That is the whole trick.</span></div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 04 / 10</span></div>
+      <div class="cap" data-on="1">It starts with a goal in plain words — no script, no flowchart.<span class="ex">› “Jonas needs to be at the Hamburg-Altona site on Thursday by 9:00 …”</span></div>
+      <div class="cap" data-on="2"><span class="hl-blue">Think</span> — the model reads everything so far and decides what should happen next.<span class="ex hl-blue">› “I should get the site's exact address first.”</span></div>
+      <div class="cap" data-on="3"><span class="hl-orange">Act</span> — it writes a request to use a tool. Text. That is all a model can produce.<span class="ex hl-orange">› get_site("Hamburg-Altona")</span></div>
+      <div class="cap" data-on="4"><span class="hl-green">Observe</span> — your code runs the tool and pastes the result back into the conversation.<span class="ex hl-green">› { address: "Harkortstraße 12, 22765 Hamburg" }</span></div>
+      <div class="cap" data-on="5">Constraint not met? Something missing? <span class="hl-green">Around again</span> — with everything it just learned.<span class="ex">› “Address ✓. Now the trains.”</span></div>
+      <div class="cap" data-on="6">Nothing left to do → it answers. <span class="hl-blue">That is the whole trick.</span><span class="ex hl-blue">› “Itinerary sent to Jonas ✓”</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 04 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 5 · WHAT IS A TOOL ============ -->
@@ -488,7 +570,13 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="frame"></div><span class="cross tr">+</span>
       <div class="eyebrow reveal ed">TOOLS</div>
       <div class="head reveal d1 ed">A tool is a capability someone built —<br><span class="hl-orange">described in plain words.</span></div>
-      <div class="sub reveal d2 ed">The model never runs it. It writes a request; your code executes it and pastes the result back.</div>
+      <div class="roundtrip reveal d2" aria-hidden="true">
+        <div class="rt-box b"><span class="t ed">Model</span><span class="d ed">writes a request — just text</span></div>
+        <div class="rt-arr o">── request ─➜</div>
+        <div class="rt-box o"><span class="t ed">Your code</span><span class="d ed">runs the real thing</span></div>
+        <div class="rt-arr g">── result ─➜</div>
+        <div class="rt-box g"><span class="t ed">Context</span><span class="d ed">result pasted back — the model reads it</span></div>
+      </div>
       <div class="tools">
         <div class="tool reveal d2"><div class="name">get_site</div>
           <div class="desc ed">“Look up a Koppla construction site by name. Returns its street address and site manager.”</div></div>
@@ -500,7 +588,7 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
           <div class="desc ed">“Send a travel itinerary as a message. ‘to’ is the recipient's name.”</div></div>
       </div>
       <div class="foot reveal d5 ed">↑ these four descriptions are, word for word, what the model reads in the demo</div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 05 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 05 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 6 · AUTONOMY LADDER (interactive) ============ -->
@@ -515,7 +603,7 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <div class="rung" data-on="3"><div class="r-name ed">3 · Fixed workflow</div><div class="r-ex ed">Same steps in the same order, every time. A pipeline with an LLM inside.</div></div>
         <div class="rung" data-on="4"><div class="r-name ed">4 · Agent</div><div class="r-ex ed">Picks its own next step until the goal is met. The demo you're about to see.</div></div>
       </div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 06 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 06 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 7 · SWITCH TO DEMO ============ -->
@@ -533,7 +621,35 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <span class="chip o ed">options ruled out by constraints</span>
       </div>
       <div class="switchnote reveal d4 ed">→ switching to the browser tab with the demo</div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 07 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 07 / 11</span></div>
+    </section>
+
+    <!-- ============ SLIDE 7B · THE FORMULA ============ -->
+    <section class="slide" id="s7b">
+      <div class="frame"></div><span class="cross tl">+</span><span class="cross bl">+</span>
+      <div class="eyebrow reveal ed">WHAT YOU JUST WATCHED</div>
+      <div class="equation reveal d1">
+        <div class="eq-chip ink"><span class="t ed">LLM</span><span class="s ed">predicts text</span></div>
+        <span class="eq-plus">+</span>
+        <div class="eq-chip o"><span class="t ed">Tools</span><span class="s ed">capabilities we hand it</span></div>
+        <span class="eq-plus">+</span>
+        <div class="eq-chip bl"><span class="t ed">Context</span><span class="s ed">memory of every step</span></div>
+        <span class="eq-plus">+</span>
+        <div class="eq-chip g"><span class="t ed">Loop</span><span class="s ed">repeat until done</span></div>
+        <span class="eq-plus">+</span>
+        <div class="eq-chip o"><span class="t ed">Actions</span><span class="s ed">your code executes</span></div>
+        <span class="eq-plus">=</span>
+        <div class="eq-chip res"><span class="t ed">AI Agent</span><span class="s ed">gets things done</span></div>
+      </div>
+      <div class="lineage reveal d3">
+        <div class="lin"><span class="tag ed">THE ENGINE</span><h3 class="ed">LLM</h3><p class="ed">Predicts the next word. That is all it ever does.</p></div>
+        <span class="lin-arr">→</span>
+        <div class="lin"><span class="tag ed">A MODEL</span><h3 class="ed">Claude · GPT</h3><p class="ed">An LLM trained to be helpful — the “brain” you chat with.</p></div>
+        <span class="lin-arr">→</span>
+        <div class="lin agent"><span class="tag ed">AN AGENT</span><h3 class="ed">Claude Code</h3><p class="ed">Claude + tools + this loop, running on your computer.</p></div>
+      </div>
+      <div class="payoff statement reveal d5 ed"><span class="hl-blue">That</span> is how a text predictor ends up <span class="hl-orange">doing things.</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 08 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 8 · WHERE IT GOES WRONG ============ -->
@@ -551,7 +667,7 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <p class="ed">Cap the loops · limit the tools · a human approves anything hard to undo.</p>
       </div>
       <div class="guardnote reveal d5 ed">Claude Code asking “may I edit this file?” — that's a human in the loop.</div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 08 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 09 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 9 · WHAT THIS MEANS FOR KOPPLA ============ -->
@@ -562,7 +678,7 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="new reveal d3"><span class="now-lbl ed">THE QUESTION NOW</span>
         <div class="statement ed">“What <span class="hl-orange">tools</span> do we give it — and what do we let it do <span class="hl-blue">alone</span>?”</div>
       </div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 09 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 10 / 11</span></div>
     </section>
 
     <!-- ============ SLIDE 10 · QUESTIONS ============ -->
@@ -571,13 +687,13 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
       <div class="eyebrow reveal ed">THANK YOU</div>
       <h1 class="reveal d1 ed">Questions<span class="hl-orange">?</span></h1>
       <div class="thanks reveal d3 ed">demo + slides live in the koppla-demo repo · Piero</div>
-      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 10 / 10</span></div>
+      <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 11 / 11</span></div>
     </section>
 
   </main>
 </div>
 
-<div class="deck-controls" id="pageCount">1 / 10</div>
+<div class="deck-controls" id="pageCount">1 / 11</div>
 <div class="edit-hotzone"></div>
 <button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏️</button>
 
