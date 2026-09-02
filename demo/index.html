@@ -97,13 +97,15 @@
     <div class="goal"><span class="label">Goal</span>{{ goal }}</div>
     <div class="controls">
       <div class="buttons">
-        <button class="primary" :disabled="!apiKey || busy" @click="start">Start</button>
+        <button class="primary" v-if="!busy" :disabled="!apiKey" @click="start">Start</button>
+        <button class="primary" v-else :disabled="pending.length === 0" @click="next">Next ▸{{ pending.length > 1 ? " · " + pending.length : "" }}</button>
         <button :disabled="events.length === 0 || busy" @click="saveRun">Save run</button>
         <button :disabled="busy" @click="$refs.file.click()">Load run</button>
         <input ref="file" type="file" accept=".json,application/json" hidden @change="loadRun">
         <button @click="reset">Reset</button>
       </div>
-      <div class="hint" v-if="!apiKey">No API key found — add demo/env.local.js (see README), or Load a saved run.</div>
+      <div class="hint" v-if="!apiKey && !busy">No API key found — add demo/env.local.js (see README), or Load a saved run.</div>
+      <div class="hint" v-if="busy">→ or Space also advances</div>
     </div>
   </header>
 
@@ -162,8 +164,6 @@
 <script src="agent.js"></script>
 <script src="env.local.js"></script><!-- optional, git-ignored: window.OPENAI_API_KEY = "sk-..." (a file-not-found console note is harmless) -->
 <script>
-  const REPLAY_DELAY_MS = 1500;
-  const LIVE_STAGGER_MS = 800;
   const MAX_TYPE_MS = 3000;        // a whole card finishes typing within this
   const CHAR_MS = 33;              // ~30 chars/s ceiling
 
@@ -213,12 +213,14 @@
   Vue.createApp({
     components: { typewriter: Typewriter, "tool-result": ToolResult },
     data() {
-      return { goal: GOAL, apiKey: window.OPENAI_API_KEY || "", events: [], status: "idle", runId: 0 };
+      return { goal: GOAL, apiKey: window.OPENAI_API_KEY || "", events: [], pending: [],
+               modelDone: false, status: "idle", runId: 0 };
     },
     computed: {
       busy() { return this.status === "running" || this.status === "replaying"; },
       cycle() { return this.events.reduce((m, e) => Math.max(m, e.cycle || 0), 0); },
       statusLabel() {
+        if (this.busy && this.pending.length) return "press Next";
         return { idle: "ready", running: "thinking…", replaying: "replaying…", done: "done", error: "error" }[this.status];
       },
       rows() {
@@ -245,6 +247,8 @@
         });
       },
     },
+    mounted() { window.addEventListener("keydown", this.onKey); },
+    unmounted() { window.removeEventListener("keydown", this.onKey); },
     methods: {
       fmtArgs(args) {
         return Object.entries(args || {})
@@ -254,29 +258,37 @@
       async start() {
         const runId = ++this.runId;
         this.events = [];
+        this.pending = [];
+        this.modelDone = false;
         this.status = "running";
         const t0 = Date.now();
-        const queue = [];
-        let draining = null;
-        const drain = () => {
-          if (draining) return draining;
-          draining = (async () => {
-            await Promise.resolve();   // yield first: guarantees this IIFE never resolves
-                                        // synchronously, so the `draining =` assignment below
-                                        // always lands before any inner `draining = null`
-            while (queue.length) {
-              if (runId !== this.runId) { queue.length = 0; break; }
-              this.events.push(queue.shift());
-              if (queue.length) await new Promise(r => setTimeout(r, LIVE_STAGGER_MS));
-            }
-            draining = null;
-          })();
-          return draining;
+        // Events queue in `pending`; each Next press (or → / Space) reveals one.
+        // The goal event is not rendered as a card, so it skips the queue.
+        const emit = e => {
+          if (runId !== this.runId) return;
+          const ev = { ...e, t: Date.now() - t0 };
+          if (ev.type === "goal") this.events.push(ev);
+          else this.pending.push(ev);
         };
-        const emit = e => { queue.push({ ...e, t: Date.now() - t0 }); drain(); };
         await runAgent(this.goal, emit, { apiKey: this.apiKey, tools: TOOLS, toolDefs: TOOL_DEFS });
-        while (draining) await draining;
-        if (runId === this.runId) this.status = this.events.some(e => e.type === "error") ? "error" : "done";
+        if (runId !== this.runId) return;
+        this.modelDone = true;
+        this.maybeFinish(runId);
+      },
+      next() {
+        if (!this.pending.length) return;
+        this.events.push(this.pending.shift());
+        this.maybeFinish(this.runId);
+      },
+      maybeFinish(runId) {
+        if (runId !== this.runId || !this.modelDone || this.pending.length || !this.busy) return;
+        this.status = this.events.some(e => e.type === "error") ? "error" : "done";
+      },
+      onKey(e) {
+        if ((e.key === "ArrowRight" || e.key === " ") && this.busy && this.pending.length) {
+          e.preventDefault();
+          this.next();
+        }
       },
       saveRun() {
         const blob = new Blob([JSON.stringify(this.events, null, 2)], { type: "application/json" });
@@ -297,21 +309,24 @@
         try { data = validateRun(JSON.parse(await file.text())); }
         catch (e) {
           const message = e.message.startsWith("Not a saved run") ? e.message : "Not a saved run: " + e.message;
-          this.events = [{ type: "error", message, t: 0 }]; this.status = "error"; return;
+          this.events = [{ type: "error", message, t: 0 }]; this.pending = []; this.status = "error"; return;
         }
         const runId = ++this.runId;
         this.events = [];
+        this.pending = [];
+        this.modelDone = true;   // the whole run is already known; Next steps through it
         this.status = "replaying";
         for (const e of data) {
-          if (runId !== this.runId) return;
-          this.events.push(e);
-          await new Promise(r => setTimeout(r, REPLAY_DELAY_MS));
+          if (e.type === "goal") this.events.push(e);
+          else this.pending.push(e);
         }
-        if (runId === this.runId) this.status = data.some(e => e.type === "error") ? "error" : "done";
+        this.maybeFinish(runId);
       },
       reset() {
         this.runId += 1;
         this.events = [];
+        this.pending = [];
+        this.modelDone = false;
         this.status = "idle";
       },
     },

@@ -30,7 +30,7 @@ laptop for the talk. Everything must run there without setup.
 | Tool parameters | No filter params (`arrive_by`, `max_price` dropped). Tools return all options. | If code filtered, the judgement calls would not be the model's. |
 | Parallel tool calls | `parallel_tool_calls: false` | Clean Think → Act → Observe per cycle; matches the slide. |
 | Permission gate | None. `send_itinerary` runs like any tool. | Keep the demo purely about the loop. Slides 7/8 adjusted (§9). |
-| Pacing | No Next button, no manual pacing. Cards appear as events happen; "thinking…" indicator while waiting. Within a cycle the tools run synchronously, so the UI reveals consecutive cards with a short automatic stagger (~0.8 s) — otherwise Think, Act and Observe would paint in one frame and the loop would be invisible live. | Simpler; the latency *is* the model thinking; the stagger keeps Think → Act → Observe visible. |
+| Pacing | Manual: a **Next** button (also → / Space) reveals one card per press, for live runs and replays alike. The model runs ahead in the background while events queue; the status pill shows "press Next" when a step is ready. | The model is too fast to narrate live; stepping lets the presenter talk through each Think / Act / Observe. |
 | History | Loop keeps the `input` list itself and appends output items + tool results each cycle (no `previous_response_id`). | Shows the context growing; provider-agnostic; slide-able. |
 | Code structure | Three separate blocks in one file: `tools`, `runAgent(goal, emit)`, Vue app. | Loop is pure, testable from the console, and readable on a slide. |
 | Portability | Vue vendored (no CDN). A known-good run committed for offline replay. | Work laptop may block CDNs or the API. |
@@ -239,8 +239,9 @@ Layout, top to bottom:
     right → left.
   - `done` → highlighted Done card, left, full text.
   - `error` → red card spanning both columns.
-- Live runs reveal queued events with a short stagger (`LIVE_STAGGER_MS`,
-  ~0.8 s) between consecutive cards; the page auto-scrolls to the newest card.
+- Events queue while the model runs; each press of **Next** (or → / Space)
+  reveals one card — live and replay alike. The page auto-scrolls to the
+  newest card.
 - Typography: base 20 px, light high-contrast theme (site-plan palette: blueprint blue for Think/Done, safety orange for Act, field green for Observe), readable on a projector.
   No settings, no chat input.
 

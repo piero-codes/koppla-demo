@@ -45,8 +45,8 @@ Buttons: **Start** runs the agent · **Save run** downloads the run as JSON ·
    ```
    then open http://localhost:8000/ and try again.
 4. If it still fails, present with **Load run** and `good-run.json`. The
-   cards, pacing and typewriter are identical; only the "thinking…" wait is
-   replaced by a fixed 1.5 s delay.
+   cards and typewriter are identical, and you still step through with
+   **Next** — only the real "thinking…" wait is gone.
 
 Keep a second browser tab with `good-run.json` already loaded during the talk.
 
