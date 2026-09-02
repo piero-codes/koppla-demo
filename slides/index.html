@@ -556,12 +556,12 @@ h2 { font-family: var(--font-display); font-stretch: 112%; font-weight: 800; tex
         <div class="node n-done"  data-on="6" style="left:1234px; top:118px; transform: translateY(-100%);">Done</div>
       </div>
       <div class="cap" data-on="0">One shape. Everything an agent does is this loop.</div>
-      <div class="cap" data-on="1">It starts with a goal in plain words — no script, no flowchart.<span class="ex">› “Jonas needs to be at the Hamburg-Altona site on Thursday by 9:00 …”</span></div>
-      <div class="cap" data-on="2"><span class="hl-blue">Think</span> — the model reads everything so far and decides what should happen next.<span class="ex hl-blue">› “I should get the site's exact address first.”</span></div>
+      <div class="cap" data-on="1">It starts with a goal in plain words — no script, no flowchart.<span class="ex">› “Jonas needs a train from Berlin to the Hamburg-Altona construction site — Thursday, arriving by 9:00.”</span></div>
+      <div class="cap" data-on="2"><span class="hl-blue">Think</span> — the model reads everything so far and decides what should happen next.<span class="ex hl-blue">› “Before I can pick trains and a hotel, I need the site's exact address.”</span></div>
       <div class="cap" data-on="3"><span class="hl-orange">Act</span> — it writes a request to use a tool. Text. That is all a model can produce.<span class="ex hl-orange">› get_site("Hamburg-Altona")</span></div>
       <div class="cap" data-on="4"><span class="hl-green">Observe</span> — your code runs the tool and pastes the result back into the conversation.<span class="ex hl-green">› { address: "Harkortstraße 12, 22765 Hamburg" }</span></div>
-      <div class="cap" data-on="5">Constraint not met? Something missing? <span class="hl-green">Around again</span> — with everything it just learned.<span class="ex">› “Address ✓. Now the trains.”</span></div>
-      <div class="cap" data-on="6">Nothing left to do → it answers. <span class="hl-blue">That is the whole trick.</span><span class="ex hl-blue">› “Itinerary sent to Jonas ✓”</span></div>
+      <div class="cap" data-on="5">Constraint not met? Something missing? <span class="hl-green">Around again</span> — with everything it just learned.<span class="ex">› “Address ✓ — now find trains from Berlin that arrive before 9:00.”</span></div>
+      <div class="cap" data-on="6">Nothing left to do → it answers. <span class="hl-blue">That is the whole trick.</span><span class="ex hl-blue">› “Itinerary sent to Jonas: the 06:55 train from Berlin, arriving 08:45 ✓”</span></div>
       <div class="sheet"><span>KOPPLA · WHAT IS AN AI AGENT?</span><span>SHEET 04 / 11</span></div>
     </section>
 
