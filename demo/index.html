@@ -17,7 +17,20 @@
   html { font-size: 20px; }
   body { margin: 0; background: var(--bg); color: var(--ink);
          font-family: "Avenir Next", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; line-height: 1.5; }
-  #app { max-width: 1600px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+  #app { max-width: 1600px; margin: 0 auto; padding: 1rem 1.5rem 7rem; }
+  main > * { scroll-margin-bottom: 5.5rem; }  /* auto-scroll stops above the floating Next bar */
+
+  .nextbar { position: fixed; bottom: 1.1rem; left: 50%; transform: translateX(-50%); z-index: 100;
+             display: flex; align-items: center; gap: 0.8rem; background: var(--card);
+             border: 1.5px solid var(--line); border-radius: 999px; padding: 0.45rem 1rem 0.45rem 0.45rem;
+             box-shadow: 0 10px 32px rgba(27, 39, 51, 0.16); animation: rise 0.25s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translate(-50%, 10px); } }
+  .nextbar button { font-size: 1.05rem; font-weight: 700; padding: 0.6rem 1.7rem; border-radius: 999px; }
+  .nextbar button:disabled { opacity: 1; background: var(--card); border-color: var(--line);
+                             color: var(--muted); animation: pulse 1.2s ease-in-out infinite; }
+  .nextbar .count { display: inline-block; margin-left: 0.55rem; background: rgba(255, 255, 255, 0.28);
+                    border-radius: 999px; padding: 0 0.55rem; font-variant-numeric: tabular-nums; }
+  .nextbar .keys { font-size: 0.72rem; color: var(--muted); }
 
   header { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start;
            padding-bottom: 0.9rem; border-bottom: 1.5px solid var(--line); }
@@ -97,15 +110,13 @@
     <div class="goal"><span class="label">Goal</span>{{ goal }}</div>
     <div class="controls">
       <div class="buttons">
-        <button class="primary" v-if="!busy" :disabled="!apiKey" @click="start">Start</button>
-        <button class="primary" v-else :disabled="pending.length === 0" @click="next">Next ▸{{ pending.length > 1 ? " · " + pending.length : "" }}</button>
+        <button class="primary" :disabled="!apiKey || busy" @click="start">Start</button>
         <button :disabled="events.length === 0 || busy" @click="saveRun">Save run</button>
         <button :disabled="busy" @click="$refs.file.click()">Load run</button>
         <input ref="file" type="file" accept=".json,application/json" hidden @change="loadRun">
         <button @click="reset">Reset</button>
       </div>
       <div class="hint" v-if="!apiKey && !busy">No API key found — add demo/env.local.js (see README), or Load a saved run.</div>
-      <div class="hint" v-if="busy">→ or Space also advances</div>
     </div>
   </header>
 
@@ -157,6 +168,14 @@
       </template>
     </template>
   </main>
+
+  <div class="nextbar" v-if="busy">
+    <button class="primary" :disabled="pending.length === 0" @click="next">
+      <template v-if="pending.length">Next ▸<span v-if="pending.length > 1" class="count">{{ pending.length }}</span></template>
+      <template v-else>thinking…</template>
+    </button>
+    <span class="keys">→ or Space</span>
+  </div>
 </div>
 
 <script src="vendor/vue.global.prod.js"></script>
